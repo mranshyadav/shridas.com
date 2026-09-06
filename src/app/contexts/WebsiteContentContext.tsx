@@ -31,17 +31,17 @@ const defaultContent: WebsiteContent = {
         experience: "8+",
       },
       images: {
-        heroBackground: "https://images.unsplash.com/photo-1557683316-973673baf926?w=1920&h=1080&fit=crop",
-        profileImage: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=600&fit=crop",
-        decorativeImage: "https://images.unsplash.com/photo-1558655146-d09347e92766?w=800&h=800&fit=crop",
+        heroBackground: "",
+        profileImage: "",
+        decorativeImage: "",
       },
     },
   },
   about: {
     heroTitle: "Designing with Purpose, Building with Empathy",
     heroSubtitle: "A senior UX designer passionate about creating meaningful digital experiences that solve real problems.",
-    mainImage: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&h=1000&fit=crop",
-    heroBackgroundImage: "https://images.unsplash.com/photo-1557683316-973673baf926?w=1920&h=600&fit=crop",
+    mainImage: "",
+    heroBackgroundImage: "",
     introduction: {
       title: "Hi, I'm a UX Designer",
       description: [
@@ -398,9 +398,9 @@ const defaultContent: WebsiteContent = {
       description: "Currently accepting new projects starting Q2 2026. For urgent inquiries, please email directly.",
     },
     images: {
-      heroBackground: "https://images.unsplash.com/photo-1557683316-973673baf926?w=1920&h=600&fit=crop",
-      decorativeImage: "https://images.unsplash.com/photo-1558655146-d09347e92766?w=800&h=800&fit=crop",
-      contactImage: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=600&fit=crop",
+      heroBackground: "",
+      decorativeImage: "",
+      contactImage: "",
     },
   },
   work: {
@@ -408,8 +408,8 @@ const defaultContent: WebsiteContent = {
     heroSubtitle: "A selection of projects showcasing my design process and impact",
     featuredText: "Featured Projects",
     images: {
-      heroBackground: "https://images.unsplash.com/photo-1557683316-973673baf926?w=1920&h=600&fit=crop",
-      decorativeImage: "https://images.unsplash.com/photo-1558655146-d09347e92766?w=800&h=800&fit=crop",
+      heroBackground: "",
+      decorativeImage: "",
     },
   },
   footer: {
@@ -435,13 +435,13 @@ const defaultContent: WebsiteContent = {
   siteSettings: {
     siteName: "Portfolio",
     siteTagline: "Senior UX Designer",
-    logo: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&h=200&fit=crop",
-    favicon: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=64&h=64&fit=crop",
-    ogImage: "https://images.unsplash.com/photo-1557683316-973673baf926?w=1200&h=630&fit=crop",
+    logo: "",
+    favicon: "",
+    ogImage: "",
     images: {
-      lightLogo: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&h=200&fit=crop",
-      darkLogo: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&h=200&fit=crop",
-      mobileLogo: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&h=100&fit=crop",
+      lightLogo: "",
+      darkLogo: "",
+      mobileLogo: "",
     },
   },
 };

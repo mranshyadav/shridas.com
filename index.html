@@ -1,15 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>PORTFOLIO-NEW</title>
-    </head>
+    <title>Ansh Yadav — Product Designer</title>
+    <meta
+      name="description"
+      content="Ansh Yadav is a product designer working on complex systems — research-driven, end-to-end, shipped."
+    />
+    <meta name="author" content="Ansh Yadav" />
+    <meta name="theme-color" content="#FBFBF9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0A0A0B" media="(prefers-color-scheme: dark)" />
 
-    <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-    </body>
-  </html>
-  
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Ansh Yadav — Product Designer" />
+    <meta
+      property="og:description"
+      content="Product designer working on complex systems — research-driven, end-to-end, shipped."
+    />
+    <meta property="og:url" content="https://shridas.com" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="canonical" href="https://shridas.com" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+
+    <!-- Set the theme before first paint so there is no flash of the wrong palette. -->
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('portfolio-theme');
+          var theme =
+            saved === 'light' || saved === 'dark'
+              ? saved
+              : window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

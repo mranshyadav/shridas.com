@@ -13,13 +13,21 @@ import {
 } from "lucide-react";
 
 export function CMSLayout() {
-  const { user, hasRole, logout } = useAuth();
+  const { user, hasRole, logout, isLoading } = useAuth();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
-  // Redirect if not authenticated or doesn't have appropriate role
+  // The stored session is restored in an effect, so the first render always has
+  // user === null. Redirecting during that frame logged you out on every
+  // refresh of an /admin page — wait for the check to finish first.
+  if (isLoading) {
+    return null;
+  }
+
+  // Send anyone without a role to the admin sign-in page. It is not linked from
+  // the public site.
   if (!user || !hasRole(["admin", "editor", "viewer"])) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/admin/login" replace />;
   }
 
   const navigation = [

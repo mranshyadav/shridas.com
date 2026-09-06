@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CorelQ — Workspace Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    />
+    <style>
+      /* ========================================================================
+         CorelQ — Workspace dashboard, portfolio render.
+
+         This is a higher-fidelity execution of the EXISTING product design, not
+         a new one: the icon rail, gold accent, widget cards with drag handles,
+         breadcrumb + big page title, and the underlying data all come from the
+         real screens in ~/Mockup-Screens/qwry. Kept deliberately close so the
+         screen still represents Ansh's work rather than a redesign of it.
+
+         Render:  npm run mockups
+         Output:  public/work/query-ai/desktop.jpg   (1600 × 1000, 16:10)
+         ====================================================================== */
+
+      :root {
+        --gold: #dfa818;
+        --gold-deep: #b6820c;
+        --gold-tint: #fdf6e3;
+        --green: #10a37f;
+        --green-tint: #e7f6f1;
+        --blue: #3b82f6;
+        --indigo: #4917e6;
+        --rose: #e5484d;
+
+        --ink: #0f1729;
+        --ink-2: #344054;
+        --muted: #667085;
+        --faint: #98a2b3;
+        --line: #e7e9ee;
+        --line-soft: #f1f3f7;
+        --page: #f7f8fa;
+        --card: #ffffff;
+
+        --shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.03);
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        width: 1600px;
+        height: 1000px;
+        overflow: hidden;
+        font-family: 'Inter', -apple-system, sans-serif;
+        color: var(--ink);
+        background: var(--card);
+        -webkit-font-smoothing: antialiased;
+        font-variant-numeric: tabular-nums;
+        display: flex;
+      }
+
+      /* ------------------------------------------------------------- rail -- */
+
+      .rail {
+        width: 76px;
+        flex: none;
+        border-right: 1px solid var(--line);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 18px 0 20px;
+        background: var(--card);
+      }
+      .logo { width: 38px; height: 38px; margin-bottom: 26px; }
+      .rail-btn {
+        width: 40px; height: 40px; border-radius: 10px;
+        display: grid; place-items: center; margin-bottom: 6px; color: var(--faint);
+      }
+      .rail-btn.on {
+        color: var(--ink); background: var(--gold-tint);
+        box-shadow: inset 0 0 0 1px rgba(223, 168, 24, 0.35);
+      }
+      .rail-spacer { flex: 1; }
+      .avatar {
+        width: 38px; height: 38px; border-radius: 50%;
+        background: linear-gradient(135deg, #f2c14e, #d98c3f);
+        display: grid; place-items: center; color: #fff; font-size: 13px; font-weight: 600;
+        box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--line);
+      }
+
+      /* ----------------------------------------------------------- shell -- */
+
+      .shell { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+      .topbar {
+        height: 64px; flex: none; border-bottom: 1px solid var(--line);
+        display: flex; align-items: center; gap: 20px; padding: 0 24px; background: var(--card);
+      }
+      .brand { display: flex; align-items: baseline; gap: 8px; }
+      .brand-name { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
+      .brand-sub { font-size: 10px; color: var(--faint); font-weight: 500; }
+
+      .search {
+        flex: 1; max-width: 520px; height: 38px; border-radius: 9px;
+        background: var(--page); border: 1px solid var(--line);
+        display: flex; align-items: center; gap: 10px; padding: 0 14px;
+        color: var(--faint); font-size: 13px;
+      }
+      .top-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+      .btn-gold {
+        height: 38px; padding: 0 16px; border-radius: 9px; background: var(--gold);
+        color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px;
+        box-shadow: 0 1px 2px rgba(182, 130, 12, 0.3);
+      }
+      .icon-btn {
+        width: 38px; height: 38px; border-radius: 9px; border: 1px solid var(--line);
+        display: grid; place-items: center; color: var(--ink-2);
+      }
+
+      /* ----------------------------------------------------------- board -- */
+
+      .board { flex: 1; background: var(--page); padding: 22px 24px; overflow: hidden; }
+
+      .crumbs { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 7px; }
+      .crumbs b { color: var(--ink); font-weight: 600; }
+
+      .head { display: flex; align-items: flex-end; justify-content: space-between; margin: 8px 0 18px; }
+      .h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+      .h1-sub { font-size: 12.5px; color: var(--muted); margin-top: 5px; }
+      .head-tools { display: flex; align-items: center; gap: 8px; }
+      .chip {
+        height: 34px; padding: 0 13px; border-radius: 8px; background: var(--card);
+        border: 1px solid var(--line); font-size: 12.5px; font-weight: 500; color: var(--ink-2);
+        display: flex; align-items: center; gap: 7px; box-shadow: var(--shadow);
+      }
+      .chip.live { color: var(--green); }
+      .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+      /* ------------------------------------------------------------ grid -- */
+
+      .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+      .card {
+        background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+        box-shadow: var(--shadow); padding: 16px 18px; display: flex; flex-direction: column;
+      }
+      .card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+      .grip { color: #cdd2dc; flex: none; }
+      .card-title { font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; }
+      .kebab { margin-left: auto; color: #c3c8d2; }
+      .card-note { font-size: 11px; color: var(--faint); }
+
+      /* KPI */
+      .kpi { padding: 15px 17px; }
+      .kpi-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
+      .kpi-row { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 9px; }
+      .kpi-val { font-size: 27px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+      .delta {
+        font-size: 11px; font-weight: 600; padding: 3px 7px; border-radius: 20px;
+        display: inline-flex; align-items: center; gap: 3px;
+      }
+      .up { color: var(--green); background: var(--green-tint); }
+      .down { color: var(--rose); background: #fdecec; }
+
+      .legend { display: flex; gap: 22px; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line-soft); }
+      .legend div { font-size: 11.5px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+      .legend b { color: var(--ink); font-size: 13px; font-weight: 600; }
+      .sq { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+
+      .rows { margin-top: 12px; display: flex; flex-direction: column; gap: 9px; }
+      .row { display: flex; align-items: center; gap: 10px; font-size: 12.5px; }
+      .row .nm { color: var(--ink-2); }
+      .row .vl { margin-left: auto; font-weight: 600; font-size: 12.5px; }
+      .bar-tr { height: 5px; border-radius: 3px; background: var(--line-soft); width: 88px; overflow: hidden; }
+      .bar-fl { height: 100%; border-radius: 3px; }
+
+      table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+      th {
+        text-align: left; font-size: 10px; font-weight: 600; letter-spacing: 0.07em;
+        text-transform: uppercase; color: var(--faint); padding: 0 0 9px;
+        border-bottom: 1px solid var(--line);
+      }
+      td { padding: 9px 0; font-size: 12.5px; color: var(--ink-2); border-bottom: 1px solid var(--line-soft); }
+      td.n { font-weight: 600; color: var(--ink); }
+      .pill { font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+      .pill.ok { color: var(--green); background: var(--green-tint); }
+      .pill.warn { color: var(--gold-deep); background: var(--gold-tint); }
+    </style>
+  </head>
+
+  <body>
+    <!-- ------------------------------------------------------------ rail -- -->
+    <aside class="rail">
+      <svg class="logo" viewBox="0 0 40 40" fill="none">
+        <path d="M25 6a14 14 0 100 28 17 17 0 010-28z" fill="#dfa818" />
+        <path d="M31 10a11 11 0 000 20" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".55" />
+        <path d="M36 14a7 7 0 000 12" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".3" />
+      </svg>
+
+      <div class="rail-btn on">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>
+      </div>
+      <div class="rail-btn">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h6"/></svg>
+      </div>
+      <div class="rail-btn">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
+      </div>
+      <div class="rail-btn">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>
+      </div>
+      <div class="rail-btn">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a4 4 0 01-5 5L5 16v3h3l4.7-4.7a4 4 0 015-5l-2.5-2.5 2.5-2.5-3 3z"/></svg>
+      </div>
+
+      <div class="rail-spacer"></div>
+      <div class="avatar">AY</div>
+    </aside>
+
+    <div class="shell">
+      <!-- -------------------------------------------------------- topbar -- -->
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-name">CorelQ</span>
+          <span class="brand-sub">Powered by Neuromotion</span>
+        </div>
+
+        <div class="search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          Search datasets, dashboards, queries…
+        </div>
+
+        <div class="top-right">
+          <div class="icon-btn">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a6 6 0 016 6v4l2 3H4l2-3V9a6 6 0 016-6zM10 19a2 2 0 004 0"/></svg>
+          </div>
+          <div class="btn-gold">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></svg>
+            Import Data
+          </div>
+        </div>
+      </header>
+
+      <!-- --------------------------------------------------------- board -- -->
+      <main class="board">
+        <div class="crumbs">
+          Home <span>›</span> Application Center <span>›</span> <b>Workspace</b>
+        </div>
+
+        <div class="head">
+          <div>
+            <h1 class="h1">Workspace</h1>
+            <p class="h1-sub">Seismic activity · 605 months of records across 4 connected sources</p>
+          </div>
+          <div class="head-tools">
+            <div class="chip live"><span class="dot"></span> Live</div>
+            <div class="chip">Last 12 months
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="chip">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+              Add widget
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI row -->
+        <div class="grid" style="margin-bottom:16px">
+          <div class="card kpi">
+            <div class="kpi-label">Total Spent</div>
+            <div class="kpi-row">
+              <div class="kpi-val">$682.5</div>
+              <div class="delta up">▲ 12.4%</div>
+            </div>
+          </div>
+          <div class="card kpi">
+            <div class="kpi-label">Queries Run</div>
+            <div class="kpi-row">
+              <div class="kpi-val">1,135</div>
+              <div class="delta up">▲ 8.1%</div>
+            </div>
+          </div>
+          <div class="card kpi">
+            <div class="kpi-label">Peak Monthly Events</div>
+            <div class="kpi-row">
+              <div class="kpi-val">795</div>
+              <div class="delta up">▲ 3.6%</div>
+            </div>
+          </div>
+          <div class="card kpi">
+            <div class="kpi-label">Avg Service Level</div>
+            <div class="kpi-row">
+              <div class="kpi-val">635</div>
+              <div class="delta down">▼ 2.2%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="grid" style="margin-bottom:16px">
+          <!-- Customer satisfaction, spans 2 -->
+          <div class="card" style="grid-column: span 2; height:346px">
+            <div class="card-head">
+              <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg>
+              <span class="card-title">Customer Satisfaction</span>
+              <svg class="kebab" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+            </div>
+            <div class="card-note">Rolling 12-month average, both cohorts</div>
+
+            <svg viewBox="0 0 660 190" style="width:100%;flex:1;margin-top:10px" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="gGreen" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#10a37f" stop-opacity=".22"/>
+                  <stop offset="100%" stop-color="#10a37f" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="gBlue" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#3b82f6" stop-opacity=".20"/>
+                  <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <g stroke="#f1f3f7" stroke-width="1">
+                <line x1="0" y1="38" x2="660" y2="38"/><line x1="0" y1="76" x2="660" y2="76"/>
+                <line x1="0" y1="114" x2="660" y2="114"/><line x1="0" y1="152" x2="660" y2="152"/>
+              </g>
+              <path d="M0,42 L60,68 L120,52 L180,74 L240,44 L300,80 L360,96 L420,70 L480,86 L540,62 L600,74 L660,18 L660,190 L0,190 Z" fill="url(#gGreen)"/>
+              <path d="M0,42 L60,68 L120,52 L180,74 L240,44 L300,80 L360,96 L420,70 L480,86 L540,62 L600,74 L660,18" fill="none" stroke="#10a37f" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+              <path d="M0,110 L60,88 L120,128 L180,150 L240,146 L300,124 L360,132 L420,128 L480,140 L540,120 L600,110 L660,58 L660,190 L0,190 Z" fill="url(#gBlue)"/>
+              <path d="M0,110 L60,88 L120,128 L180,150 L240,146 L300,124 L360,132 L420,128 L480,140 L540,120 L600,110 L660,58" fill="none" stroke="#3b82f6" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+              <g fill="#10a37f"><circle cx="0" cy="42" r="3.4"/><circle cx="240" cy="44" r="3.4"/><circle cx="660" cy="18" r="4.2"/></g>
+              <g fill="#b6820c"><circle cx="60" cy="88" r="3.4"/><circle cx="180" cy="150" r="3.4"/><circle cx="660" cy="58" r="4.2"/></g>
+            </svg>
+
+            <div class="legend">
+              <div><span class="sq" style="background:#10a37f"></span> This cohort <b>$3,004</b></div>
+              <div><span class="sq" style="background:#3b82f6"></span> Last month <b>$3,004</b></div>
+            </div>
+          </div>
+
+          <!-- Volume vs service level -->
+          <div class="card" style="height:346px">
+            <div class="card-head">
+              <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg>
+              <span class="card-title">Volume vs Service Level</span>
+              <svg class="kebab" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+            </div>
+            <div class="card-note">Stacked by fulfilment channel</div>
+
+            <svg viewBox="0 0 300 190" style="width:100%;flex:1;margin-top:10px" preserveAspectRatio="none">
+              <g stroke="#f1f3f7" stroke-width="1">
+                <line x1="0" y1="47" x2="300" y2="47"/><line x1="0" y1="95" x2="300" y2="95"/><line x1="0" y1="143" x2="300" y2="143"/>
+              </g>
+              <g>
+                <rect x="14"  y="62"  width="26" height="70" rx="3" fill="#b6820c"/><rect x="14"  y="132" width="26" height="58" rx="3" fill="#10a37f"/>
+                <rect x="62"  y="30"  width="26" height="96" rx="3" fill="#b6820c"/><rect x="62"  y="126" width="26" height="64" rx="3" fill="#10a37f"/>
+                <rect x="110" y="52"  width="26" height="84" rx="3" fill="#b6820c"/><rect x="110" y="136" width="26" height="54" rx="3" fill="#10a37f"/>
+                <rect x="158" y="70"  width="26" height="66" rx="3" fill="#b6820c"/><rect x="158" y="136" width="26" height="54" rx="3" fill="#10a37f"/>
+                <rect x="206" y="88"  width="26" height="60" rx="3" fill="#b6820c"/><rect x="206" y="148" width="26" height="42" rx="3" fill="#10a37f"/>
+                <rect x="254" y="76"  width="26" height="66" rx="3" fill="#b6820c"/><rect x="254" y="142" width="26" height="48" rx="3" fill="#10a37f"/>
+              </g>
+            </svg>
+
+            <div class="legend">
+              <div><span class="sq" style="background:#b6820c"></span> Volume <b>1,135</b></div>
+              <div><span class="sq" style="background:#10a37f"></span> Service <b>635</b></div>
+            </div>
+          </div>
+
+          <!-- Traffic by location -->
+          <div class="card" style="height:346px">
+            <div class="card-head">
+              <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg>
+              <span class="card-title">Traffic By Location</span>
+              <svg class="kebab" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+            </div>
+            <div class="card-note">Share of sessions by region</div>
+
+            <div style="display:grid;place-items:center;margin:14px 0 4px">
+              <svg width="132" height="132" viewBox="0 0 42 42">
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#f1f3f7" stroke-width="7"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#344054" stroke-width="7"
+                        stroke-dasharray="52.1 47.9" stroke-dashoffset="25" stroke-linecap="butt"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#dfa818" stroke-width="7"
+                        stroke-dasharray="22.8 77.2" stroke-dashoffset="-27.1" stroke-linecap="butt"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#10a37f" stroke-width="7"
+                        stroke-dasharray="13.9 86.1" stroke-dashoffset="-49.9" stroke-linecap="butt"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#93c5fd" stroke-width="7"
+                        stroke-dasharray="11.2 88.8" stroke-dashoffset="-63.8" stroke-linecap="butt"/>
+                <text x="21" y="20.4" text-anchor="middle" font-size="5.4" font-weight="700" fill="#0f1729">52.1%</text>
+                <text x="21" y="25" text-anchor="middle" font-size="2.6" fill="#98a2b3">UNITED STATES</text>
+              </svg>
+            </div>
+
+            <div class="rows">
+              <div class="row"><span class="sq" style="background:#344054"></span><span class="nm">United States</span><span class="vl">52.1%</span></div>
+              <div class="row"><span class="sq" style="background:#dfa818"></span><span class="nm">Canada</span><span class="vl">22.8%</span></div>
+              <div class="row"><span class="sq" style="background:#10a37f"></span><span class="nm">Mexico</span><span class="vl">13.9%</span></div>
+              <div class="row"><span class="sq" style="background:#93c5fd"></span><span class="nm">Other</span><span class="vl">11.2%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom row -->
+        <div class="grid">
+          <!-- Total spent, spans 3 -->
+          <div class="card" style="grid-column: span 3; height:322px">
+            <div class="card-head">
+              <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg>
+              <span class="card-title">Total Spent</span>
+              <span style="font-size:12px;color:var(--muted);margin-left:6px">$682.5 · June is 3.8× the monthly floor</span>
+              <svg class="kebab" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+            </div>
+
+            <svg viewBox="0 0 1000 206" style="width:100%;flex:1;margin-top:12px" preserveAspectRatio="none">
+              <line x1="0" y1="34" x2="946" y2="34" stroke="#b6820c" stroke-width="1.4" stroke-dasharray="7 6" opacity=".7"/>
+              <text x="954" y="38" font-size="12" fill="#b6820c" font-weight="600">$179</text>
+              <g fill="#fdf3d6">
+                <rect x="6"   y="106" width="52" height="74"  rx="5"/>
+                <rect x="84"  y="52"  width="52" height="128" rx="5"/>
+                <rect x="162" y="88"  width="52" height="92"  rx="5"/>
+                <rect x="240" y="78"  width="52" height="102" rx="5"/>
+                <rect x="318" y="96"  width="52" height="84"  rx="5"/>
+              </g>
+              <rect x="396" y="24" width="52" height="156" rx="5" fill="#4917e6"/>
+              <g fill="#fdf3d6">
+                <rect x="474" y="100" width="52" height="80"  rx="5"/>
+                <rect x="552" y="58"  width="52" height="122" rx="5"/>
+                <rect x="630" y="128" width="52" height="52"  rx="5"/>
+                <rect x="708" y="70"  width="52" height="110" rx="5"/>
+                <rect x="786" y="112" width="52" height="68"  rx="5"/>
+                <rect x="864" y="90"  width="52" height="90"  rx="5"/>
+              </g>
+              <g font-size="12" fill="#98a2b3" text-anchor="middle">
+                <text x="32"  y="199">Jan</text><text x="110" y="199">Feb</text>
+                <text x="188" y="199">Mar</text><text x="266" y="199">Apr</text>
+                <text x="344" y="199">May</text>
+                <text x="422" y="199" fill="#4917e6" font-weight="700">Jun</text>
+                <text x="500" y="199">Jul</text><text x="578" y="199">Aug</text>
+                <text x="656" y="199">Sep</text><text x="734" y="199">Oct</text>
+                <text x="812" y="199">Nov</text><text x="890" y="199">Dec</text>
+              </g>
+            </svg>
+
+
+          </div>
+
+          <!-- Connected sources -->
+          <div class="card" style="height:322px">
+            <div class="card-head">
+              <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg>
+              <span class="card-title">Connected Sources</span>
+              <svg class="kebab" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+            </div>
+            <div class="card-note">4 of 300+ import methods in use</div>
+
+            <table>
+              <thead><tr><th>Source</th><th>Tables</th><th style="text-align:right">Sync</th></tr></thead>
+              <tbody>
+                <tr><td class="n">MongoDB</td><td>34</td><td style="text-align:right"><span class="pill ok">Live</span></td></tr>
+                <tr><td class="n">Postgres</td><td>18</td><td style="text-align:right"><span class="pill ok">Live</span></td></tr>
+                <tr><td class="n">Snowflake</td><td>52</td><td style="text-align:right"><span class="pill warn">Queued</span></td></tr>
+                <tr><td class="n">S3 Parquet</td><td>9</td><td style="text-align:right"><span class="pill ok">Live</span></td></tr>
+              </tbody>
+            </table>
+
+            <div class="row" style="margin-top:auto;padding-top:12px;border-top:1px solid var(--line-soft)">
+              <span class="nm" style="color:var(--muted)">Storage used</span>
+              <span class="vl">113 / 250 GB</span>
+            </div>
+            <div class="bar-tr" style="width:100%;margin-top:7px">
+              <div class="bar-fl" style="width:45%;background:var(--gold)"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

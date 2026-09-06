@@ -3,83 +3,21 @@
 
 @import 'tw-animate-css';
 
-/* Design Tokens - Hero Color Specification */
-:root {
-  /* Optimized Color System - Improved contrast and sophistication */
-  
-  /* Background colors */
-  --bg-primary: #FAFAF9;        /* Warmer off-white (was #F7F7F5) */
-  --bg-secondary: #FFFFFF;       /* Pure white */
-  --bg-tertiary: #F5F5F4;        /* Subtle grey for cards */
-  
-  /* Text colors - Improved contrast ratios */
-  --text-primary: #18181B;       /* Rich black (was #1C1C1C) - AAA contrast */
-  --text-secondary: #52525B;     /* Refined grey (was #5F6368) - better hierarchy */
-  --text-tertiary: #71717A;      /* Lighter grey for metadata */
-  
-  /* Accent colors - More refined blue */
-  --accent: #1E40AF;             /* Deeper blue (was #2F5D9F) - better contrast */
-  --accent-hover: #1E3A8A;       /* Darker hover state */
-  --accent-light: #DBEAFE;       /* Light accent for backgrounds */
-  --accent-subtle: #EFF6FF;      /* Very subtle accent tint */
-  
-  /* Border colors - More nuanced */
-  --border-default: #E4E4E7;     /* Refined grey (was #E0E0DD) */
-  --border-light: #F4F4F5;       /* Very subtle border */
-  --border-accent: #93C5FD;      /* Accent border for focus states */
-  
-  /* Shadow colors for depth */
-  --shadow-sm: rgba(0, 0, 0, 0.05);
-  --shadow-md: rgba(0, 0, 0, 0.08);
-  --shadow-lg: rgba(0, 0, 0, 0.12);
-  --shadow-accent: rgba(30, 64, 175, 0.15);
-  
-  /* Success, warning, error (for future use) */
-  --success: #16A34A;
-  --warning: #EA580C;
-  --error: #DC2626;
+/* Design tokens deliberately do NOT live here — see theme.css.
+   This file is only the Tailwind entry point plus a few custom utilities. */
+
+@utility container-page {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
 
-/* Custom animations following the spec: 180-220ms, ease-out */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@utility container-prose {
+  width: 100%;
+  max-width: var(--container-text);
 }
 
-.animate-fadeInUp {
-  animation: fadeInUp 200ms ease-out forwards;
-}
-
-.animate-fadeInUp-delay-80 {
-  animation: fadeInUp 200ms ease-out 80ms forwards;
-  opacity: 0;
-}
-
-.animate-fadeInUp-delay-120 {
-  animation: fadeInUp 200ms ease-out 120ms forwards;
-  opacity: 0;
-}
-
-/* Hover scale utilities */
-.hover\:scale-102:hover {
-  transform: scale(1.02);
-}
-
-.hover\:scale-103:hover {
-  transform: scale(1.03);
-}
-
-/* Focus states for accessibility */
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+@utility section-y {
+  padding-block: var(--section-y);
 }

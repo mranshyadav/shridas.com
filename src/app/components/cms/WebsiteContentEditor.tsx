@@ -861,7 +861,7 @@ function ImageField({
               type="text"
               value={value}
               onChange={(e) => onChange(e.target.value)}
-              placeholder={placeholder || "https://images.unsplash.com/..."}
+              placeholder={placeholder || ""}
               className="w-full px-4 py-3 rounded-lg border transition-all duration-200"
               style={{
                 backgroundColor: "var(--bg-primary)",

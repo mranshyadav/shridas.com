@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ansh Yadav — Product Designer — Résumé</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600&family=Inter:wght@400;500;600&display=swap"
+    />
+
+    <style>
+      /* ======================================================================
+         Résumé — print source.
+
+         Rendered to public/resume.pdf with:
+           npm run resume
+
+         DESIGN NOTES
+         - Single column. Applicant tracking systems parse multi-column layouts
+           badly and silently scramble the order; the elegance here comes from
+           typography and hairlines, not from a sidebar.
+         - Everything is real selectable text. No images, no icons carrying
+           meaning, no text in pseudo-elements — all of which ATS drops.
+         - Dates sit in a right-aligned span inside each entry, which stays
+           linear in the DOM and so survives text extraction intact.
+         ====================================================================== */
+
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #fff;
+      }
+
+      body {
+        font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 8.75pt;
+        line-height: 1.42;
+        color: #16171c;
+        -webkit-font-smoothing: antialiased;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .page {
+        width: 210mm;
+        padding: 10mm 14mm 9mm;
+        margin: 0 auto;
+      }
+
+      /* --------------------------------------------------------- header -- */
+
+      .name {
+        font-family: 'Inter Tight', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 23pt;
+        font-weight: 600;
+        letter-spacing: -0.035em;
+        line-height: 1;
+        margin: 0;
+      }
+
+      .title {
+        font-size: 10pt;
+        font-weight: 500;
+        color: #16171c;
+        margin: 3mm 0 0;
+      }
+
+      .contact {
+        margin: 2.3mm 0 0;
+        font-size: 8.4pt;
+        color: #55565e;
+      }
+
+      .contact a {
+        color: #55565e;
+        text-decoration: none;
+      }
+
+      .sep {
+        color: #b9bcc4;
+        padding: 0 1.4mm;
+      }
+
+      /* -------------------------------------------------------- sections -- */
+
+      h2 {
+        font-family: 'Inter', sans-serif;
+        font-size: 7.4pt;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: #16171c;
+        margin: 0 0 2.2mm;
+        padding-top: 1.9mm;
+        border-top: 0.7pt solid #16171c;
+      }
+
+      section {
+        margin-top: 3.5mm;
+      }
+
+      .summary {
+        margin: 0;
+        color: #34353c;
+        max-width: 172mm;
+      }
+
+      /* ------------------------------------------------------- entries -- */
+
+      .entry {
+        margin-bottom: 2.5mm;
+        page-break-inside: avoid;
+      }
+      .entry:last-child {
+        margin-bottom: 0;
+      }
+
+      .entry-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 6mm;
+      }
+
+      .role {
+        font-size: 9.4pt;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      .org {
+        font-weight: 400;
+        color: #34353c;
+      }
+
+      .when {
+        flex: none;
+        font-size: 8.2pt;
+        color: #55565e;
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Sub-roles at a single employer — indented under one company heading so
+         a two-year progression does not read as three short jobs. */
+      .subrole {
+        display: flex;
+        justify-content: space-between;
+        gap: 6mm;
+        font-size: 8.6pt;
+        color: #34353c;
+        margin-top: 1.1mm;
+        padding-left: 3mm;
+        border-left: 0.7pt solid #dcdee3;
+      }
+
+      ul {
+        margin: 1.4mm 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        position: relative;
+        padding-left: 3.6mm;
+        margin-bottom: 0.7mm;
+        color: #34353c;
+      }
+
+      li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 1.55mm;
+        width: 1.5mm;
+        height: 0.55pt;
+        background: #9a9ca4;
+      }
+
+      /* ------------------------------------------------------- projects -- */
+
+      .project {
+        margin-bottom: 1.7mm;
+        page-break-inside: avoid;
+      }
+      .project:last-child {
+        margin-bottom: 0;
+      }
+
+      .project-name {
+        font-weight: 600;
+      }
+
+      .project-meta {
+        color: #6b6d75;
+      }
+
+      /* --------------------------------------------------------- skills -- */
+
+      .skills {
+        display: grid;
+        grid-template-columns: 21mm 1fr;
+        gap: 0.9mm 4mm;
+        align-items: baseline;
+      }
+
+      .skills dt {
+        font-size: 7.6pt;
+        font-weight: 600;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: #6b6d75;
+      }
+
+      .skills dd {
+        margin: 0;
+        color: #34353c;
+      }
+
+      /* ---------------------------------------------------- placeholders -- */
+
+      /* Anything still marked TODO is drawn so it cannot be missed. Do not send
+         this résumé while any of these remain. */
+      .todo {
+        color: #a1373f;
+        border-bottom: 0.7pt dotted #c4351b;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page">
+      <header>
+        <h1 class="name">Ansh Yadav</h1>
+        <p class="title">Product Designer</p>
+        <p class="contact">
+          New Delhi, India <span class="sep">·</span>
+          <a href="mailto:mranshyadav74@gmail.com">mranshyadav74@gmail.com</a> <span class="sep">·</span>
+          +91 96969 75512 <span class="sep">·</span>
+          <a href="https://shridas.com">shridas.com</a> <span class="sep">·</span>
+          <a href="https://www.linkedin.com/in/ansh001/">linkedin.com/in/ansh001</a>
+        </p>
+      </header>
+
+      <section>
+        <h2>Summary</h2>
+        <p class="summary">
+          Product designer, four years across enterprise data, fleet and IoT, healthcare and manufacturing
+          software. Usually the only designer on the product — design end to end, plus testing, QA and
+          driving fixes through engineering.
+        </p>
+      </section>
+
+      <section>
+        <h2>Experience</h2>
+
+        <div class="entry">
+          <div class="entry-head">
+            <p class="role">Product Designer <span class="org">— SRIIO · Part-time, Remote</span></p>
+            <span class="when">Jun 2026 — Present</span>
+          </div>
+          <ul>
+            <li class="todo">Add one line: the product, and what you own on it.</li>
+          </ul>
+        </div>
+
+        <div class="entry">
+          <div class="entry-head">
+            <p class="role">
+              Product Designer &amp; Developer <span class="org">— CheckMed · Part-time, Remote</span>
+            </p>
+            <span class="when">Apr 2026 — Present</span>
+          </div>
+          <ul>
+            <li>Product design across five interconnected portals: employee, HR, vendor and internal operations.</li>
+            <li>Designed <strong>and built</strong> Policy Creator end to end — the configuration layer the other four portals read from.</li>
+            <li>Own testing and QA: raise bugs, drive fixes with the developers who own the code, and fix some directly.</li>
+            <li>Designed and built the platform design system — an npm package with generated Markdown docs.</li>
+            <li>Presented Policy Creator during a major enterprise client onboarding.</li>
+          </ul>
+        </div>
+
+        <div class="entry">
+          <div class="entry-head">
+            <p class="role">
+              UI/UX Designer · Product Designer
+              <span class="org">— Neuromotion Systems · Full-time, Noida</span>
+            </p>
+            <span class="when">Nov 2024 — Feb 2026</span>
+          </div>
+          <ul>
+            <li>Only designer in the product engineering team — design ownership across three products and the website.</li>
+            <li>Owned testing alongside design: found bugs, drove fixes, pushed improvements through to release.</li>
+          </ul>
+        </div>
+
+        <div class="entry">
+          <div class="entry-head">
+            <p class="role">Nityom <span class="org">— New Delhi</span></p>
+            <span class="when">Aug 2022 — Nov 2024 · 2 yrs 4 mos</span>
+          </div>
+          <div class="subrole">
+            <span>Junior UI/UX Designer · Full-time</span><span class="when">Aug 2023 — Nov 2024</span>
+          </div>
+          <div class="subrole">
+            <span>UI/UX Designer · Internship, Remote</span><span class="when">Feb 2023 — Jul 2023</span>
+          </div>
+          <div class="subrole">
+            <span>Graphic Design · Internship</span><span class="when">Aug 2022 — Jan 2023</span>
+          </div>
+          <ul>
+            <li>Designed KaamHai — blue-collar hiring, workforce, payroll and leave — as a worker app and admin portal.</li>
+            <li>Sole designer on Role, a film-industry hiring app built on reels, and on MeetX, a meetings app.</li>
+            <li>Moved from graphic design into interface work within six months.</li>
+          </ul>
+        </div>
+
+      </section>
+
+      <section>
+        <h2>Selected Projects</h2>
+
+        <p class="project">
+          <span class="project-name">Query.ai</span>
+          <span class="project-meta">— Enterprise data &amp; AI · Sole designer, with the founder.</span>
+          300+ database import methods, its own LLM, and RBAC across departments and groups; users choose
+          how each dataset is visualised and analysed.
+        </p>
+
+        <p class="project">
+          <span class="project-name">Fleet Management</span>
+          <span class="project-meta">— Fleet, IoT &amp; driver safety · Sole designer.</span>
+          Owner, manager and driver portals; IoT pump telemetry; AI camera detection for impaired driving,
+          overspeeding and harsh braking.
+        </p>
+
+        <p class="project">
+          <span class="project-name">Policy Creator</span>
+          <span class="project-meta">— Healthcare platform · Designed and built end to end, ongoing.</span>
+          Rules and service configuration the platform's other four portals read from.
+        </p>
+
+        <p class="project">
+          <span class="project-name">Design System</span>
+          <span class="project-meta">— Component library · Designed and built end to end, ongoing.</span>
+          Ships as an npm package; developers install it and import components directly. Generates a
+          Markdown reference so consistency rules live next to the code.
+        </p>
+      </section>
+
+      <section>
+        <h2>Skills</h2>
+        <dl class="skills">
+          <dt>Design</dt>
+          <dd>
+            Information architecture, wireframing, interaction design, design systems, prototyping
+          </dd>
+          <dt>Research</dt>
+          <dd>User interviews, usability testing, journey mapping, competitive analysis</dd>
+          <dt>Delivery</dt>
+          <dd>Design specs, component handoff, QA and test passes, Selenium, front-end development</dd>
+          <dt>Tools</dt>
+          <dd>Figma, Adobe XD, Illustrator, Photoshop</dd>
+        </dl>
+      </section>
+
+      <section>
+        <h2>Education</h2>
+        <div class="entry-head">
+          <p class="role todo">Degree, institution</p>
+          <span class="when todo">Years</span>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>
