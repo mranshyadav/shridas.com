@@ -940,6 +940,297 @@
     }
   }
 
+
+/* ============================================================================
+   Screen rail — the case-study gallery
+
+   A real scroll container, not a transform carousel. Native scrolling, snap
+   points and focus handling do most of the work; the counter, the arrows and
+   the pointer-drag are layered on top and only exist once `data-enhanced` is
+   set. Without it — prerendered, or if the bundle never lands — every rule
+   here is inert and the gallery is the plain two-up grid it always was.
+   ========================================================================== */
+
+.rail__track {
+  display: grid;
+  gap: 3rem 2rem;
+}
+@media (min-width: 768px) {
+  .rail__track {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.rail__frame {
+  display: block;
+  width: 100%;
+  text-align: left;
+  cursor: zoom-in;
+  position: relative;
+}
+
+.rail__caption {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  font-size: var(--fs-sm);
+  color: var(--ink-tertiary);
+}
+.rail__num {
+  flex-shrink: 0;
+  transition: color var(--dur) var(--ease-out);
+}
+
+.rail__bar {
+  display: none;
+}
+
+/* -- enhanced: the filmstrip -------------------------------------------- */
+
+.rail[data-enhanced] .rail__track {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  position: relative;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  cursor: grab;
+  /* Bleed to the window edge so the strip reads as continuing past the page,
+     while the first and last frames still line up with the text column. */
+  margin-inline: calc(var(--gutter) * -1);
+  padding: 0.5rem var(--gutter) 1.5rem;
+}
+.rail[data-enhanced] .rail__track::-webkit-scrollbar {
+  display: none;
+}
+.rail[data-enhanced][data-dragging] .rail__track {
+  cursor: grabbing;
+  /* Snapping fights a drag that sets scrollLeft directly; it takes over again
+     the moment the pointer is released. */
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+}
+.rail[data-enhanced][data-dragging] .rail__frame {
+  cursor: grabbing;
+}
+
+.rail[data-enhanced] .rail__item {
+  flex: 0 0 auto;
+  scroll-snap-align: center;
+  margin: 0;
+  opacity: 0.62;
+  transition:
+    opacity var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out);
+}
+.rail[data-enhanced] .rail__item[data-current] {
+  opacity: 1;
+}
+
+/* Each device gets the width it deserves, which is what gives the strip its
+   rhythm — a phone beside a dashboard should not be the same size. */
+.rail[data-enhanced] .rail__item[data-platform='desktop'] {
+  width: min(78vw, 44rem);
+}
+.rail[data-enhanced] .rail__item[data-platform='tablet'] {
+  width: min(46vw, 21rem);
+}
+.rail[data-enhanced] .rail__item[data-platform='mobile'] {
+  width: min(34vw, 14rem);
+}
+
+.rail[data-enhanced] .rail__frame:hover .device,
+.rail[data-enhanced] .rail__frame:focus-visible .device {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+.rail[data-enhanced] .device {
+  transition:
+    transform var(--dur) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out);
+}
+.rail[data-enhanced] .rail__frame:hover + .rail__caption .rail__num {
+  color: var(--signal);
+}
+
+.rail__expand {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.875rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: var(--tr-mono);
+  text-transform: uppercase;
+  color: var(--paper);
+  background: color-mix(in srgb, var(--ink) 82%, transparent);
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out);
+  pointer-events: none;
+}
+.rail[data-enhanced] .rail__frame:hover .rail__expand,
+.rail[data-enhanced] .rail__frame:focus-visible .rail__expand {
+  opacity: 1;
+  transform: none;
+}
+
+/* -- counter, progress, arrows ------------------------------------------ */
+
+.rail[data-enhanced] .rail__bar {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+.rail__progress {
+  flex: 1;
+  height: var(--rule-width);
+  background: var(--rule);
+  overflow: hidden;
+}
+.rail__progress span {
+  display: block;
+  height: 100%;
+  background: var(--signal);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease-out);
+}
+.rail__nav {
+  display: flex;
+  gap: 0.5rem;
+}
+.rail__nav button {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: var(--rule-width) solid var(--rule);
+  border-radius: 999px;
+  color: var(--ink-secondary);
+  transition:
+    border-color var(--dur) var(--ease-out),
+    color var(--dur) var(--ease-out),
+    opacity var(--dur) var(--ease-out);
+}
+.rail__nav button:hover:not(:disabled) {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.rail__nav button:disabled {
+  opacity: 0.3;
+}
+
+/* -- overlay ------------------------------------------------------------- */
+
+.lightbox {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  overflow: hidden;
+}
+.lightbox::backdrop {
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.lightbox__inner {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 1.5rem;
+  width: 100%;
+  height: 100%;
+  padding: clamp(3.5rem, 7vh, 5rem) var(--gutter) clamp(1.5rem, 4vh, 2.5rem);
+}
+
+.lightbox__stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  /* Named so the browser morphs this element between the rail and the overlay,
+     and from one screen to the next, instead of cross-cutting the whole page. */
+  view-transition-name: screen-stage;
+}
+.lightbox__stage .device {
+  max-width: min(100%, 76rem);
+  max-height: 100%;
+}
+.lightbox__stage .device--phone,
+.lightbox__stage .device--tablet {
+  max-width: min(100%, 22rem);
+}
+.lightbox__stage .device__viewport {
+  max-height: 100%;
+}
+
+.lightbox__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 62ch;
+  margin-inline: auto;
+  text-align: center;
+}
+.lightbox__caption {
+  color: var(--ink-secondary);
+  line-height: var(--lh-relaxed);
+}
+
+.lightbox__close {
+  position: absolute;
+  top: clamp(1rem, 3vh, 1.75rem);
+  right: var(--gutter);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: var(--tr-mono);
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.lightbox__close:hover {
+  color: var(--signal);
+}
+
+.lightbox__step {
+  position: absolute;
+  top: 50%;
+  width: 3rem;
+  height: 3rem;
+  border: var(--rule-width) solid var(--rule);
+  border-radius: 999px;
+  background: var(--paper-raised);
+  color: var(--ink-secondary);
+  transform: translateY(-50%);
+  transition:
+    border-color var(--dur) var(--ease-out),
+    color var(--dur) var(--ease-out);
+}
+.lightbox__step:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.lightbox__step--prev {
+  left: clamp(0.5rem, 2vw, 1.5rem);
+}
+.lightbox__step--next {
+  right: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+@media (max-width: 767px) {
+  .lightbox__step {
+    display: none;
+  }
+}
+
 }
 
 /* ============================================================================

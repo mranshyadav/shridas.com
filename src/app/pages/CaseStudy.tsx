@@ -5,7 +5,7 @@ import { Reveal } from '../components/site/Reveal';
 import { ArrowLink } from '../components/site/ArrowLink';
 import { Copy } from '../components/site/Copy';
 import { ProjectShowcase } from '../components/site/ProjectShowcase';
-import { DeviceFrame } from '../components/site/DeviceFrame';
+import { ScreenRail } from '../components/site/ScreenRail';
 
 /** Reading-progress hairline pinned under the header. */
 function ReadingProgress() {
@@ -272,44 +272,12 @@ export function CaseStudy() {
           <p className="eyebrow">06 — The work</p>
         </div>
 
-        <div className="mt-10 grid gap-x-8 gap-y-14 md:grid-cols-2">
-          {study.screens.map((screen, i) => (
-            <Reveal
-              key={i}
-              delay={(i % 2) * 80}
-              /* The lead desktop shot takes the full measure; everything else
-                 sits two-up so the gallery has a rhythm instead of a wall. */
-              className={screen.wide ? 'md:col-span-2' : undefined}
-            >
-              <figure>
-                <div
-                  className={
-                    screen.platform === 'mobile'
-                      ? 'mx-auto max-w-[15rem]'
-                      : screen.platform === 'tablet'
-                        ? 'mx-auto max-w-[22rem]'
-                        : ''
-                  }
-                >
-                  <DeviceFrame
-                    platform={screen.platform}
-                    src={screen.src}
-                    alt={screen.src ? `${project.title} — ${screen.platform} view` : ''}
-                    expects={`public/work/${project.id}/${screen.platform}.png`}
-                  />
-                </div>
-                <figcaption
-                  className="mt-4 flex gap-4"
-                  style={{ fontSize: 'var(--fs-sm)', color: 'var(--ink-tertiary)' }}
-                >
-                  <span className="num shrink-0">{String(i + 1).padStart(2, '0')}</span>
-                  <span>
-                    <Copy>{screen.caption}</Copy>
-                  </span>
-                </figcaption>
-              </figure>
-            </Reveal>
-          ))}
+        <div className="mt-10">
+          <ScreenRail
+            screens={study.screens}
+            projectId={project.id}
+            projectTitle={project.title}
+          />
         </div>
       </section>
 
