@@ -4,15 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!--
+      Everything between these markers is replaced per route by
+      scripts/prerender.mjs at build time — see src/app/seo/meta.ts. What is
+      written here is only the fallback used by `vite dev`, where nothing is
+      prerendered; useSeo() corrects it once React mounts.
+    -->
+    <!--seo:start-->
     <title>Ansh Yadav — Product Designer</title>
     <meta
       name="description"
       content="Ansh Yadav is a product designer working on complex systems — research-driven, end-to-end, shipped."
     />
     <meta name="author" content="Ansh Yadav" />
-    <meta name="theme-color" content="#FBFBF9" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0A0A0B" media="(prefers-color-scheme: dark)" />
-
+    <link rel="canonical" href="https://shridas.com" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Ansh Yadav — Product Designer" />
     <meta
@@ -21,8 +26,10 @@
     />
     <meta property="og:url" content="https://shridas.com" />
     <meta name="twitter:card" content="summary_large_image" />
+    <!--seo:end-->
 
-    <link rel="canonical" href="https://shridas.com" />
+    <meta name="theme-color" content="#FBFBF9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0A0A0B" media="(prefers-color-scheme: dark)" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

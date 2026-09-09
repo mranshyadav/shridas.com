@@ -5,10 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "build": "vite build && vite build --ssr src/entry-server.tsx --outDir .ssr && node scripts/prerender.mjs",
+    "build:client": "vite build",
+    "prerender": "node scripts/prerender.mjs",
+    "preview": "node scripts/serve-dist.mjs",
+    "preview:vite": "vite preview",
     "resume": "\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --no-pdf-header-footer --virtual-time-budget=8000 --print-to-pdf=public/resume.pdf resume/resume.html",
-    "mockups": "\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --hide-scrollbars --force-device-scale-factor=2 --window-size=1600,1000 --virtual-time-budget=9000 --screenshot=/tmp/mockup.png mockups/query-ai-dashboard.html"
+    "mockups": "\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --hide-scrollbars --force-device-scale-factor=2 --window-size=1600,1000 --virtual-time-budget=9000 --screenshot=/tmp/mockup.png mockups/query-ai-dashboard.html && ffmpeg -y -i /tmp/mockup.png -vf scale=1600:1000:flags=lanczos -q:v 3 public/work/query-ai/desktop.jpg"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
