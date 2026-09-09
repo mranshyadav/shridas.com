@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
 
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { ProvidersWrapper } from './contexts/ProvidersWrapper';
+import { useSeo } from './seo/useSeo';
 
 import { Home } from './pages/Home';
 import { Work } from './pages/Work';
@@ -15,13 +16,27 @@ import { Contact } from './pages/Contact';
 import { Services } from './pages/Services';
 import { AdminLogin } from './pages/AdminLogin';
 
-import { CMSLayout } from './components/cms/CMSLayout';
-import { CMSDashboard } from './components/cms/CMSDashboard';
-import { ContentList } from './components/cms/ContentList';
-import { ContentEditor } from './components/cms/ContentEditor';
-import { MediaLibrary } from './components/cms/MediaLibrary';
-import { WebsiteContentEditor } from './components/cms/WebsiteContentEditor';
-import { ChatbotDashboard } from './components/cms/ChatbotDashboard';
+/**
+ * The CMS is loaded on demand, for two reasons.
+ *
+ * It is reachable only at /admin and never linked, yet statically importing it
+ * put the whole editor — react-quill and Quill itself — into the bundle every
+ * visitor downloads to read a case study.
+ *
+ * It also cannot be server-rendered: Quill touches `document` as soon as it is
+ * imported, which would break the build-time prerender. A dynamic import keeps
+ * it out of the server bundle entirely, since no prerendered route is under
+ * /admin.
+ */
+const CMSLayout = lazy(() => import('./components/cms/CMSLayout').then((m) => ({ default: m.CMSLayout })));
+const CMSDashboard = lazy(() => import('./components/cms/CMSDashboard').then((m) => ({ default: m.CMSDashboard })));
+const ContentList = lazy(() => import('./components/cms/ContentList').then((m) => ({ default: m.ContentList })));
+const ContentEditor = lazy(() => import('./components/cms/ContentEditor').then((m) => ({ default: m.ContentEditor })));
+const MediaLibrary = lazy(() => import('./components/cms/MediaLibrary').then((m) => ({ default: m.MediaLibrary })));
+const WebsiteContentEditor = lazy(() =>
+  import('./components/cms/WebsiteContentEditor').then((m) => ({ default: m.WebsiteContentEditor })),
+);
+const ChatbotDashboard = lazy(() => import('./components/cms/ChatbotDashboard').then((m) => ({ default: m.ChatbotDashboard })));
 
 /** Reset scroll position on navigation, but leave hash links alone. */
 function ScrollToTop() {
@@ -56,37 +71,61 @@ function PublicLayout() {
   );
 }
 
+/**
+ * Everything inside a router, and nothing that assumes which router it is.
+ *
+ * `App` mounts it under a BrowserRouter in the browser; `entry-server.tsx`
+ * mounts the same tree under a StaticRouter to prerender each route to static
+ * HTML at build time. Keeping one component means the two can never drift.
+ */
+export function AppRoutes() {
+  useSeo();
+
+  return (
+    <>
+      <ScrollToTop />
+      <Toaster position="bottom-right" />
+      <Routes>
+        {/* CMS — no public chrome. Reachable at /admin; not linked from the site. */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+          path="/admin"
+          element={
+            <Suspense fallback={null}>
+              <CMSLayout />
+            </Suspense>
+          }
+        >
+          <Route index element={<Suspense fallback={null}><CMSDashboard /></Suspense>} />
+          <Route path="content" element={<Suspense fallback={null}><ContentList /></Suspense>} />
+          <Route path="content/new" element={<Suspense fallback={null}><ContentEditor /></Suspense>} />
+          <Route path="content/edit/:id" element={<Suspense fallback={null}><ContentEditor /></Suspense>} />
+          <Route path="media" element={<Suspense fallback={null}><MediaLibrary /></Suspense>} />
+          <Route path="website-content/edit/main" element={<Suspense fallback={null}><WebsiteContentEditor /></Suspense>} />
+          <Route path="chatbot" element={<Suspense fallback={null}><ChatbotDashboard /></Suspense>} />
+        </Route>
+
+        {/* Public site */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/work" element={<Work />} />
+          <Route path="/case-study/:id" element={<CaseStudy />} />
+          <Route path="/process" element={<Process />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </>
+  );
+}
+
 export default function App() {
   return (
     <ProvidersWrapper>
       <BrowserRouter>
-        <ScrollToTop />
-        <Toaster position="bottom-right" />
-        <Routes>
-          {/* CMS — no public chrome. Reachable at /admin; not linked from the site. */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={<CMSLayout />}>
-            <Route index element={<CMSDashboard />} />
-            <Route path="content" element={<ContentList />} />
-            <Route path="content/new" element={<ContentEditor />} />
-            <Route path="content/edit/:id" element={<ContentEditor />} />
-            <Route path="media" element={<MediaLibrary />} />
-            <Route path="website-content/edit/main" element={<WebsiteContentEditor />} />
-            <Route path="chatbot" element={<ChatbotDashboard />} />
-          </Route>
-
-          {/* Public site */}
-          <Route element={<PublicLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/work" element={<Work />} />
-            <Route path="/case-study/:id" element={<CaseStudy />} />
-            <Route path="/process" element={<Process />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
+        <AppRoutes />
       </BrowserRouter>
     </ProvidersWrapper>
   );

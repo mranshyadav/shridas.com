@@ -1,5 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ElementType, type ReactNode } from 'react';
 
+/**
+ * useLayoutEffect on the server is a no-op that React warns about on every
+ * render — and this component renders dozens of times per prerendered page.
+ * There is nothing to arm without a DOM, so fall back to useEffect there.
+ */
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
 interface RevealProps {
   children: ReactNode;
   /** Stagger within a group, in milliseconds. */
@@ -27,7 +34,7 @@ export function Reveal({ children, delay = 0, as: Tag = 'div', className = '' }:
   const [shown, setShown] = useState(false);
 
   /* Arm before paint so hiding is never visible as a flash. */
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (typeof IntersectionObserver === 'undefined') return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 

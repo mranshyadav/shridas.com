@@ -51,8 +51,19 @@ const ChatbotContext = createContext<ChatbotContextType | undefined>(undefined);
 
 export function ChatbotProvider({ children }: { children: React.ReactNode }) {
   const [interactions, setInteractions] = useState<ChatInteraction[]>(() => {
-    // Load from localStorage
-    const stored = localStorage.getItem("chatbot_interactions");
+    // Load from localStorage. Guarded because this initializer runs during
+    // render, including the build-time prerender. Testing `localStorage`
+    // itself is not enough: Node defines the global and throws on access, so
+    // the check is for a browser, and the read is wrapped as well.
+    if (typeof window === "undefined") return [];
+
+    let stored: string | null = null;
+    try {
+      stored = localStorage.getItem("chatbot_interactions");
+    } catch {
+      return [];
+    }
+
     if (stored) {
       try {
         const parsed = JSON.parse(stored);

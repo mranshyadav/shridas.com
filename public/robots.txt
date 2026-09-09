@@ -1,0 +1,6 @@
+# https://shridas.com
+User-agent: *
+Allow: /
+Disallow: /admin
+
+Sitemap: https://shridas.com/sitemap.xml
