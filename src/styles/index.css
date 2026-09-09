@@ -942,120 +942,178 @@
 
 
 /* ============================================================================
-   Screen rail — the case-study gallery
+   Screen deck — the case-study gallery
 
-   A real scroll container, not a transform carousel. Native scrolling, snap
-   points and focus handling do most of the work; the counter, the arrows and
-   the pointer-drag are layered on top and only exist once `data-enhanced` is
-   set. Without it — prerendered, or if the bundle never lands — every rule
-   here is inert and the gallery is the plain two-up grid it always was.
+   Screens fanned into depth with the middle one face-on. Each slide gets one
+   transform, written inline by the component from its distance to the active
+   index; everything here is the stage those transforms happen on.
+
+   The perspective sits on the stage, not the slides, so all of them share a
+   vanishing point. Per-slide perspective gives each its own, and the row stops
+   reading as depth and starts reading as a set of separately skewed boxes.
+
+   Without `data-enhanced` — prerendered, or if the bundle never lands — none
+   of the fanning applies and the gallery is a plain grid of screens with their
+   captions underneath.
    ========================================================================== */
 
-.rail__track {
+.deck__stage {
   display: grid;
   gap: 3rem 2rem;
 }
 @media (min-width: 768px) {
-  .rail__track {
+  .deck__stage {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-.rail__frame {
+.deck__frame {
   display: block;
   width: 100%;
   text-align: left;
-  cursor: zoom-in;
   position: relative;
 }
 
-.rail__caption {
+.deck__caption,
+.deck__now {
   display: flex;
   gap: 1rem;
   margin-top: 1.25rem;
   font-size: var(--fs-sm);
   color: var(--ink-tertiary);
 }
-.rail__num {
-  flex-shrink: 0;
-  transition: color var(--dur) var(--ease-out);
-}
 
-.rail__bar {
+.deck__arrow,
+.deck__foot {
   display: none;
 }
 
-/* -- enhanced: the filmstrip -------------------------------------------- */
+/* -- enhanced: the fan --------------------------------------------------- */
 
-.rail[data-enhanced] .rail__track {
-  display: flex;
-  align-items: flex-start;
-  gap: clamp(1.25rem, 3vw, 2.5rem);
-  position: relative;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  cursor: grab;
-  /* Bleed to the window edge so the strip reads as continuing past the page,
-     while the first and last frames still line up with the text column. */
+.deck[data-enhanced] {
+  /* The outer slides are meant to run past the text column and off the page.
+     Clipping here rather than on the stage keeps them from widening the
+     document, without flattening the 3-D context they live in. */
   margin-inline: calc(var(--gutter) * -1);
-  padding: 0.5rem var(--gutter) 1.5rem;
-}
-.rail[data-enhanced] .rail__track::-webkit-scrollbar {
-  display: none;
-}
-.rail[data-enhanced][data-dragging] .rail__track {
-  cursor: grabbing;
-  /* Snapping fights a drag that sets scrollLeft directly; it takes over again
-     the moment the pointer is released. */
-  scroll-snap-type: none;
-  scroll-behavior: auto;
-}
-.rail[data-enhanced][data-dragging] .rail__frame {
-  cursor: grabbing;
+  padding-inline: var(--gutter);
+  overflow-x: clip;
 }
 
-.rail[data-enhanced] .rail__item {
-  flex: 0 0 auto;
-  scroll-snap-align: center;
+.deck[data-enhanced] .deck__stage {
+  /* Width of one card, as a share of the stage. Everything else — how far the
+     stage has to be to fit a card, how far a card travels — is derived from
+     this, so the composition holds its proportions at every size. */
+  --deck-card: 78%;
+
+  display: block;
+  position: relative;
+  aspect-ratio: 16 / 13;
+  perspective: 2000px;
+  perspective-origin: 50% 45%;
+  transform-style: preserve-3d;
+  cursor: grab;
+  touch-action: pan-y;
+}
+@media (min-width: 768px) {
+  .deck[data-enhanced] .deck__stage {
+    --deck-card: 52%;
+    aspect-ratio: 16 / 7;
+  }
+}
+@media (min-width: 1180px) {
+  .deck[data-enhanced] .deck__stage {
+    --deck-card: 46%;
+    aspect-ratio: 16 / 6.2;
+  }
+}
+.deck[data-enhanced][data-dragging] .deck__stage {
+  cursor: grabbing;
+}
+.deck[data-enhanced] .deck__stage:focus-visible {
+  outline: var(--rule-width) solid var(--signal);
+  outline-offset: 1.5rem;
+}
+
+/* One card, centred. The transforms then fan the whole set out from here. */
+.deck[data-enhanced] .deck__slide {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--deck-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: 0;
-  opacity: 0.62;
+  translate: -50% -50%;
+  transform-origin: 50% 50%;
+}
+
+/* `will-change` only while a drag is actually in flight. Left on permanently it
+   promotes every slide to its own compositing layer for the life of the page,
+   and Chrome then deprioritises rasterising them — the side cards paint as
+   empty frames while the middle one, which has no transform to promote, comes
+   out fine. */
+.deck[data-dragging] .deck__slide {
+  will-change: transform;
+}
+/* Only after the first frame — see `ready` in ScreenDeck.tsx. And never
+   mid-drag, where the slides should track the pointer rather than ease
+   toward it. */
+.deck[data-ready]:not([data-dragging]) .deck__slide {
   transition:
-    opacity var(--dur) var(--ease-out),
-    transform var(--dur) var(--ease-out);
-}
-.rail[data-enhanced] .rail__item[data-current] {
-  opacity: 1;
+    transform var(--dur-slow) var(--ease-out),
+    opacity var(--dur-slow) var(--ease-out);
 }
 
-/* Each device gets the width it deserves, which is what gives the strip its
-   rhythm — a phone beside a dashboard should not be the same size. */
-.rail[data-enhanced] .rail__item[data-platform='desktop'] {
-  width: min(78vw, 44rem);
+/* An explicit width, not `auto`. Sizing the button to its content while the
+   device inside is sized as a percentage of the button is circular, and it
+   resolves differently per slide — one of them collapsed to 52px. The stage's
+   aspect ratio is what reserves the height instead. */
+.deck[data-enhanced] .deck__frame {
+  width: 100%;
+  cursor: pointer;
 }
-.rail[data-enhanced] .rail__item[data-platform='tablet'] {
-  width: min(46vw, 21rem);
+.deck[data-enhanced] .deck__slide[data-active] .deck__frame {
+  cursor: zoom-in;
 }
-.rail[data-enhanced] .rail__item[data-platform='mobile'] {
-  width: min(34vw, 14rem);
+.deck[data-enhanced] .deck__frame .device {
+  transition: box-shadow var(--dur-slow) var(--ease-out);
 }
-
-.rail[data-enhanced] .rail__frame:hover .device,
-.rail[data-enhanced] .rail__frame:focus-visible .device {
-  transform: translateY(-4px);
+.deck[data-enhanced] .deck__slide[data-active] .device {
   box-shadow: var(--shadow-lg);
 }
-.rail[data-enhanced] .device {
-  transition:
-    transform var(--dur) var(--ease-out),
-    box-shadow var(--dur) var(--ease-out);
-}
-.rail[data-enhanced] .rail__frame:hover + .rail__caption .rail__num {
-  color: var(--signal);
+
+.deck[data-enhanced] .deck__stage::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 90%;
+  height: 88%;
+  translate: -50% -50%;
+  /* A gradient is already soft — a blur filter on top of it only buys another
+     composited layer, and this stage has enough of those. */
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--ink) 7%, transparent) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
 }
 
-.rail__expand {
+/* Portrait devices are constrained to roughly the height of a browser frame,
+   so the fan keeps one silhouette instead of changing shape per platform. */
+.deck[data-enhanced] .deck__slide .device--browser {
+  width: 100%;
+}
+.deck[data-enhanced] .deck__slide .device--tablet {
+  width: 58%;
+}
+.deck[data-enhanced] .deck__slide .device--phone {
+  width: 36%;
+}
+
+.deck__expand {
   position: absolute;
   right: 0.875rem;
   bottom: 0.875rem;
@@ -1074,54 +1132,92 @@
     transform var(--dur) var(--ease-out);
   pointer-events: none;
 }
-.rail[data-enhanced] .rail__frame:hover .rail__expand,
-.rail[data-enhanced] .rail__frame:focus-visible .rail__expand {
+.deck[data-enhanced] .deck__slide[data-active] .deck__frame:hover .deck__expand,
+.deck[data-enhanced] .deck__slide[data-active] .deck__frame:focus-visible .deck__expand {
   opacity: 1;
   transform: none;
 }
 
-/* -- counter, progress, arrows ------------------------------------------ */
+/* -- arrows, dots, caption ----------------------------------------------- */
 
-.rail[data-enhanced] .rail__bar {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  margin-top: 0.5rem;
-}
-.rail__progress {
-  flex: 1;
-  height: var(--rule-width);
-  background: var(--rule);
-  overflow: hidden;
-}
-.rail__progress span {
-  display: block;
-  height: 100%;
-  background: var(--signal);
-  transform-origin: left;
-  transition: transform var(--dur) var(--ease-out);
-}
-.rail__nav {
-  display: flex;
-  gap: 0.5rem;
-}
-.rail__nav button {
-  width: 2.25rem;
-  height: 2.25rem;
+.deck[data-enhanced] .deck__arrow {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  top: 50%;
+  z-index: 60;
+  width: 2.75rem;
+  height: 2.75rem;
   border: var(--rule-width) solid var(--rule);
   border-radius: 999px;
+  background: var(--paper-raised);
   color: var(--ink-secondary);
+  transform: translateY(-50%);
+  box-shadow: var(--shadow-md);
   transition:
     border-color var(--dur) var(--ease-out),
     color var(--dur) var(--ease-out),
     opacity var(--dur) var(--ease-out);
 }
-.rail__nav button:hover:not(:disabled) {
+.deck[data-enhanced] .deck__arrow:hover:not(:disabled) {
   border-color: var(--ink);
   color: var(--ink);
 }
-.rail__nav button:disabled {
-  opacity: 0.3;
+.deck[data-enhanced] .deck__arrow:disabled {
+  opacity: 0.25;
+}
+.deck__arrow--prev {
+  left: var(--gutter);
+}
+.deck__arrow--next {
+  right: var(--gutter);
+}
+
+.deck[data-enhanced] .deck__foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+
+.deck__dots {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.deck__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--rule-strong);
+  transition:
+    width var(--dur) var(--ease-out),
+    background-color var(--dur) var(--ease-out);
+}
+.deck__dot[data-active] {
+  width: 1.75rem;
+  background: var(--signal);
+}
+
+.deck[data-enhanced] .deck__now {
+  justify-content: center;
+  margin: 0;
+  max-width: 56ch;
+  text-align: center;
+}
+.deck__index {
+  flex-shrink: 0;
+  color: var(--ink-tertiary);
+}
+
+@media (max-width: 767px) {
+  .deck[data-enhanced] .deck__stage {
+    aspect-ratio: 16 / 13;
+  }
+  .deck[data-enhanced] .deck__arrow {
+    display: none;
+  }
 }
 
 /* -- overlay ------------------------------------------------------------- */

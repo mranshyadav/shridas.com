@@ -5,7 +5,7 @@ import { Reveal } from '../components/site/Reveal';
 import { ArrowLink } from '../components/site/ArrowLink';
 import { Copy } from '../components/site/Copy';
 import { ProjectShowcase } from '../components/site/ProjectShowcase';
-import { ScreenRail } from '../components/site/ScreenRail';
+import { ScreenDeck } from '../components/site/ScreenDeck';
 
 /** Reading-progress hairline pinned under the header. */
 function ReadingProgress() {
@@ -273,7 +273,7 @@ export function CaseStudy() {
         </div>
 
         <div className="mt-10">
-          <ScreenRail
+          <ScreenDeck
             screens={study.screens}
             projectId={project.id}
             projectTitle={project.title}
