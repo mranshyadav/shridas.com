@@ -37,12 +37,19 @@
         --ink-2: #344054;
         --muted: #667085;
         --faint: #98a2b3;
-        --line: #e7e9ee;
-        --line-soft: #f1f3f7;
-        --page: #f7f8fa;
+        --line: #ecf0f5;
+        --line-soft: #f3f5f9;
+        --page: #eff2f6;
         --card: #ffffff;
 
-        --shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.03);
+        --shadow-xs: 0 1px 2px rgba(16, 24, 40, 0.05);
+        --shadow: 0 1px 1px rgba(16, 24, 40, 0.04), 0 4px 10px -2px rgba(16, 24, 40, 0.05),
+          0 14px 28px -10px rgba(16, 24, 40, 0.07);
+        --shadow-lift: 0 2px 4px rgba(16, 24, 40, 0.05), 0 14px 26px -8px rgba(16, 24, 40, 0.1),
+          0 30px 54px -16px rgba(16, 24, 40, 0.12);
+        /* the highlight that sells a surface as lit from above */
+        --ring: inset 0 1px 0 rgba(255, 255, 255, 0.92);
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
       }
 
       * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -69,23 +76,30 @@
         flex-direction: column;
         align-items: center;
         padding: 18px 0 20px;
-        background: var(--card);
+        background: linear-gradient(180deg, #ffffff 0%, #fcfdfe 70%, #f9fbfc 100%);
+        box-shadow: 1px 0 0 rgba(16, 24, 40, 0.02), 8px 0 24px -18px rgba(16, 24, 40, 0.3);
+        position: relative; z-index: 3;
       }
       .logo { width: 38px; height: 38px; margin-bottom: 26px; }
       .rail-btn {
         width: 40px; height: 40px; border-radius: 10px;
         display: grid; place-items: center; margin-bottom: 6px; color: var(--faint);
+        transition: color 0.2s var(--ease), background 0.2s var(--ease), transform 0.2s var(--ease);
       }
+      .rail-btn:hover { color: var(--ink-2); background: var(--line-soft); }
       .rail-btn.on {
-        color: var(--ink); background: var(--gold-tint);
-        box-shadow: inset 0 0 0 1px rgba(223, 168, 24, 0.35);
+        color: var(--gold-deep);
+        background: linear-gradient(180deg, #fefaef, var(--gold-tint));
+        box-shadow: inset 0 0 0 1px rgba(223, 168, 24, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.9),
+          0 4px 12px -3px rgba(223, 168, 24, 0.35);
       }
       .rail-spacer { flex: 1; }
       .avatar {
         width: 38px; height: 38px; border-radius: 50%;
         background: linear-gradient(135deg, #f2c14e, #d98c3f);
         display: grid; place-items: center; color: #fff; font-size: 13px; font-weight: 600;
-        box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--line);
+        box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(223, 168, 24, 0.28),
+          0 6px 14px -4px rgba(182, 130, 12, 0.45);
       }
 
       /* ----------------------------------------------------------- shell -- */
@@ -95,6 +109,8 @@
       .topbar {
         height: 64px; flex: none; border-bottom: 1px solid var(--line);
         display: flex; align-items: center; gap: 20px; padding: 0 24px; background: var(--card);
+        box-shadow: 0 1px 0 rgba(16, 24, 40, 0.02), 0 6px 18px -12px rgba(16, 24, 40, 0.18);
+        position: relative; z-index: 2;
       }
       .brand { display: flex; align-items: baseline; gap: 8px; }
       .brand-name { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
@@ -105,35 +121,56 @@
         background: var(--page); border: 1px solid var(--line);
         display: flex; align-items: center; gap: 10px; padding: 0 14px;
         color: var(--faint); font-size: 13px;
+        box-shadow: inset 0 1px 2px rgba(16, 24, 40, 0.04);
+        transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
       }
       .top-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
       .btn-gold {
-        height: 38px; padding: 0 16px; border-radius: 9px; background: var(--gold);
+        height: 38px; padding: 0 16px; border-radius: 9px;
+        background: linear-gradient(180deg, #e8b432 0%, var(--gold) 48%, var(--gold-deep) 100%);
         color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px;
-        box-shadow: 0 1px 2px rgba(182, 130, 12, 0.3);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.34), 0 1px 2px rgba(182, 130, 12, 0.34),
+          0 8px 18px -6px rgba(182, 130, 12, 0.5);
+        transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), filter 0.2s var(--ease);
+      }
+      .btn-gold:hover {
+        transform: translateY(-1px);
+        filter: saturate(1.06) brightness(1.03);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 2px 4px rgba(182, 130, 12, 0.3),
+          0 14px 26px -8px rgba(182, 130, 12, 0.55);
       }
       .icon-btn {
         width: 38px; height: 38px; border-radius: 9px; border: 1px solid var(--line);
         display: grid; place-items: center; color: var(--ink-2);
+        box-shadow: var(--shadow-xs);
+        transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), transform 0.2s var(--ease);
       }
 
       /* ----------------------------------------------------------- board -- */
 
-      .board { flex: 1; background: var(--page); padding: 22px 24px; overflow: hidden; }
+      .board {
+        flex: 1; padding: 22px 24px; overflow: hidden;
+        background: radial-gradient(900px 460px at 86% -16%, #fcefcf 0%, rgba(252, 239, 207, 0) 62%),
+          radial-gradient(820px 420px at -4% 108%, #e2e9f7 0%, rgba(226, 233, 247, 0) 60%),
+          linear-gradient(168deg, #f9fafc 0%, #eef1f6 58%, #e9edf3 100%);
+      }
 
       .crumbs { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 7px; }
       .crumbs b { color: var(--ink); font-weight: 600; }
 
       .head { display: flex; align-items: flex-end; justify-content: space-between; margin: 8px 0 18px; }
-      .h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+      .h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.035em; line-height: 1.08; }
       .h1-sub { font-size: 12.5px; color: var(--muted); margin-top: 5px; }
       .head-tools { display: flex; align-items: center; gap: 8px; }
       .chip {
         height: 34px; padding: 0 13px; border-radius: 8px; background: var(--card);
         border: 1px solid var(--line); font-size: 12.5px; font-weight: 500; color: var(--ink-2);
-        display: flex; align-items: center; gap: 7px; box-shadow: var(--shadow);
+        display: flex; align-items: center; gap: 7px; box-shadow: var(--shadow-xs);
+        transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), transform 0.2s var(--ease);
       }
+      .chip:hover { border-color: #d5dae3; box-shadow: var(--shadow-xs), 0 6px 14px -6px rgba(16, 24, 40, 0.22); }
       .chip.live { color: var(--green); }
+      .chip.live .dot { box-shadow: 0 0 0 3px rgba(16, 163, 127, 0.16); }
       .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
       /* ------------------------------------------------------------ grid -- */
@@ -141,8 +178,26 @@
       .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 
       .card {
-        background: var(--card); border: 1px solid var(--line); border-radius: 12px;
-        box-shadow: var(--shadow); padding: 16px 18px; display: flex; flex-direction: column;
+        background: linear-gradient(180deg, #fff 0%, #fdfdfe 100%);
+        border: 1px solid rgba(224, 230, 238, 0.9); border-radius: 16px;
+        box-shadow: var(--ring), 0 1px 2px rgba(16, 24, 40, 0.04),
+          0 8px 16px -6px rgba(16, 24, 40, 0.07), 0 22px 44px -16px rgba(16, 24, 40, 0.14);
+        padding: 16px 18px; display: flex; flex-direction: column;
+        transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease), border-color 0.28s var(--ease);
+      }
+      .card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(210, 219, 230, 0.95);
+        box-shadow: var(--ring), 0 2px 4px rgba(16, 24, 40, 0.05),
+          0 16px 30px -8px rgba(16, 24, 40, 0.12), 0 40px 70px -24px rgba(16, 24, 40, 0.2);
+      }
+
+      /* KPI tiles get a hint of warmth at the top edge — reads as lit glass. */
+      .card.kpi { background: linear-gradient(180deg, #fffdf8 0%, #fff 42%); }
+      .card.kpi::before {
+        content: ''; height: 2px; margin: -15px -17px 13px; border-radius: 16px 16px 0 0;
+        background: linear-gradient(90deg, rgba(223, 168, 24, 0), var(--gold), rgba(223, 168, 24, 0));
+        opacity: 0.55;
       }
       .card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
       .grip { color: #cdd2dc; flex: none; }
@@ -158,6 +213,7 @@
       .delta {
         font-size: 11px; font-weight: 600; padding: 3px 7px; border-radius: 20px;
         display: inline-flex; align-items: center; gap: 3px;
+        box-shadow: inset 0 0 0 1px rgba(16, 24, 40, 0.03);
       }
       .up { color: var(--green); background: var(--green-tint); }
       .down { color: var(--rose); background: #fdecec; }
@@ -180,11 +236,202 @@
         text-transform: uppercase; color: var(--faint); padding: 0 0 9px;
         border-bottom: 1px solid var(--line);
       }
-      td { padding: 9px 0; font-size: 12.5px; color: var(--ink-2); border-bottom: 1px solid var(--line-soft); }
+      td { padding: 9px 0; font-size: 12.5px; color: var(--ink-2); border-bottom: 1px solid var(--line-soft);
+        transition: color 0.18s var(--ease); }
+      tbody tr { transition: opacity 0.18s var(--ease); }
+      tbody tr:hover td { color: var(--ink); }
+      tbody tr:hover td.n { color: var(--gold-deep); }
       td.n { font-weight: 600; color: var(--ink); }
       .pill { font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
       .pill.ok { color: var(--green); background: var(--green-tint); }
       .pill.warn { color: var(--gold-deep); background: var(--gold-tint); }
+      .pill.ok { box-shadow: inset 0 0 0 1px rgba(16, 163, 127, 0.14); }
+      .pill.warn { box-shadow: inset 0 0 0 1px rgba(223, 168, 24, 0.22); }
+
+      /* ======================================================================
+         Motion.
+
+         Everything is an entrance that SETTLES — no loops, no infinite pulses.
+         The screenshot render (virtual-time-budget 9s) lands long after the
+         last delay (~1.5s), so the static JPG captures the finished state and
+         only a live browser sees the build. Hover states are for the live file
+         and any screen recording; they cannot affect the still.
+         ==================================================================== */
+
+      @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+      @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes draw { to { stroke-dashoffset: 0; } }
+      @keyframes grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+      @keyframes wipe { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+      @keyframes sweep { from { opacity: 0; transform: rotate(-16deg) scale(0.9); } to { opacity: 1; transform: none; } }
+
+      .rail, .topbar { animation: fade 0.5s ease both; }
+      .crumbs, .head { animation: rise 0.55s var(--ease) both; }
+      .head { animation-delay: 0.06s; }
+
+      /* Cards cascade left-to-right, row by row. */
+      .card { animation: rise 0.62s var(--ease) both; }
+      .board > .grid:nth-of-type(1) .card:nth-child(1) { animation-delay: 0.08s; }
+      .board > .grid:nth-of-type(1) .card:nth-child(2) { animation-delay: 0.14s; }
+      .board > .grid:nth-of-type(1) .card:nth-child(3) { animation-delay: 0.2s; }
+      .board > .grid:nth-of-type(1) .card:nth-child(4) { animation-delay: 0.26s; }
+      .board > .grid:nth-of-type(2) .card:nth-child(1) { animation-delay: 0.32s; }
+      .board > .grid:nth-of-type(2) .card:nth-child(2) { animation-delay: 0.38s; }
+      .board > .grid:nth-of-type(2) .card:nth-child(3) { animation-delay: 0.44s; }
+      .board > .grid:nth-of-type(3) .card:nth-child(1) { animation-delay: 0.5s; }
+      .board > .grid:nth-of-type(3) .card:nth-child(2) { animation-delay: 0.56s; }
+
+      /* Trend lines draw themselves; their area fills follow. */
+      .c-line path[stroke] {
+        stroke-dasharray: 1500; stroke-dashoffset: 1500;
+        animation: draw 1.15s cubic-bezier(0.36, 0, 0.12, 1) 0.5s both;
+      }
+      .c-line path[fill^='url'] { animation: fade 0.8s ease 0.8s both; }
+      .c-line circle { animation: fade 0.5s ease 1.35s both; }
+
+      /* Bars grow off the baseline. */
+      .c-bars rect, .c-stack rect {
+        transform-box: fill-box; transform-origin: 50% 100%;
+        animation: grow 0.7s var(--ease) both;
+      }
+      .c-stack g rect:nth-child(-n + 4) { animation-delay: 0.5s; }
+      .c-stack g rect:nth-child(n + 5):nth-child(-n + 8) { animation-delay: 0.57s; }
+      .c-stack g rect:nth-child(n + 9) { animation-delay: 0.64s; }
+      .c-bars g:first-of-type rect:nth-child(1) { animation-delay: 0.52s; }
+      .c-bars g:first-of-type rect:nth-child(2) { animation-delay: 0.57s; }
+      .c-bars g:first-of-type rect:nth-child(3) { animation-delay: 0.62s; }
+      .c-bars g:first-of-type rect:nth-child(4) { animation-delay: 0.67s; }
+      .c-bars g:first-of-type rect:nth-child(5) { animation-delay: 0.72s; }
+      .c-bars > rect { animation-delay: 0.77s; }
+      .c-bars g:last-of-type rect:nth-child(1) { animation-delay: 0.82s; }
+      .c-bars g:last-of-type rect:nth-child(2) { animation-delay: 0.87s; }
+      .c-bars g:last-of-type rect:nth-child(3) { animation-delay: 0.92s; }
+      .c-bars g:last-of-type rect:nth-child(4) { animation-delay: 0.97s; }
+      .c-bars g:last-of-type rect:nth-child(5) { animation-delay: 1.02s; }
+      .c-bars g:last-of-type rect:nth-child(6) { animation-delay: 1.07s; }
+
+      /* The peak month is the point of the chart — let it sit above the rest. */
+      .c-bars > rect[fill='#4917e6'] { filter: drop-shadow(0 8px 14px rgba(73, 23, 230, 0.32)); }
+      .c-bars line, .c-bars text { animation: fade 0.6s ease 1.1s both; }
+
+      .c-donut { animation: sweep 0.85s var(--ease) 0.5s both; }
+      .rows .row { animation: rise 0.5s var(--ease) both; }
+      .rows .row:nth-child(1) { animation-delay: 0.66s; }
+      .rows .row:nth-child(2) { animation-delay: 0.72s; }
+      .rows .row:nth-child(3) { animation-delay: 0.78s; }
+      .rows .row:nth-child(4) { animation-delay: 0.84s; }
+
+      .bar-fl { transform-origin: left center; animation: wipe 0.9s var(--ease) 0.8s both; }
+      .legend { animation: fade 0.6s ease 1.2s both; }
+      tbody tr { animation: fade 0.5s ease both; }
+      tbody tr:nth-child(1) { animation-delay: 0.62s; }
+      tbody tr:nth-child(2) { animation-delay: 0.68s; }
+      tbody tr:nth-child(3) { animation-delay: 0.74s; }
+      tbody tr:nth-child(4) { animation-delay: 0.8s; }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation: none !important; transition: none !important; }
+      }
+
+      /* ------------------------------------------------ dense workspace -- */
+
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+      /* KPI: icon chip, value, delta, and what it is being compared against. */
+      .k { padding: 14px 15px 13px; gap: 0; }
+      .k-top { display: flex; align-items: center; gap: 8px; }
+      .k-ico {
+        width: 26px; height: 26px; border-radius: 8px; flex: none;
+        display: flex; align-items: center; justify-content: center;
+        background: var(--gold-tint); color: var(--gold-deep);
+        box-shadow: inset 0 0 0 1px rgba(223, 168, 24, 0.18);
+      }
+      .k-lbl { font-size: 11.5px; font-weight: 600; color: var(--ink-2); letter-spacing: -0.005em; }
+      .k-row { display: flex; align-items: baseline; gap: 9px; margin-top: 11px; }
+      .k-val { font-size: 25px; font-weight: 700; letter-spacing: -0.032em; line-height: 1; }
+      .k-vs { font-size: 10.5px; color: var(--faint); margin-top: 7px; }
+
+      /* Sparkline with its tooltip left showing, the way a live board looks. */
+      .tip {
+        background: #0f1729; white-space: nowrap; color: #fff; border-radius: 9px;
+        padding: 8px 11px; box-shadow: 0 10px 24px -8px rgba(16, 24, 40, 0.5);
+        animation: rise 0.5s var(--ease) 0.6s both;
+      }
+      .tip b { font-size: 11.5px; font-weight: 600; display: block; }
+      .tip i { font-style: normal; font-size: 10.5px; opacity: 0.66; display: block; margin-top: 3px; }
+      .tip::after {
+        content: ''; position: absolute; left: 50%; bottom: -4px; width: 8px; height: 8px;
+        background: #0f1729; transform: translateX(-50%) rotate(45deg);
+      }
+
+      /* Gauge: ticks rather than a ring, so the value reads off the arc. */
+      .gauge-wrap { position: relative; flex: 1; display: flex; align-items: center; justify-content: center; }
+      .gauge-mid { position: absolute; text-align: center; }
+      .gauge-v { font-size: 27px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+      .gauge-c { font-size: 10.5px; color: var(--faint); margin-top: 5px; }
+
+      /* Mini bars: one series, the current column called out. */
+      .mb { display: flex; align-items: flex-end; gap: 7px; flex: 1; margin-top: 12px; }
+      .mb-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
+      .mb-b { width: 100%; border-radius: 4px 4px 2px 2px; background: #eceff4; animation: grow 0.6s var(--ease) both; }
+      .mb-b.on { background: linear-gradient(180deg, #e8b52e, #cf9712); }
+      .mb-x { display: flex; gap: 7px; margin-top: 8px; }
+      .mb-x span { flex: 1; text-align: center; font-size: 9.5px; color: var(--faint); }
+      .mb-x span.on { color: var(--ink-2); font-weight: 600; }
+
+      /* Segmented bar: three ordered states, each with its own label. */
+      .segbar { display: flex; gap: 3px; height: 8px; margin-top: 15px; }
+      .seg-s { border-radius: 4px; animation: widen 0.7s var(--ease) both; transform-origin: left; }
+      .seg-keys { display: flex; gap: 16px; margin-top: 15px; }
+      .seg-k { display: flex; gap: 8px; flex: 1; align-items: flex-start; }
+      .seg-k .d { width: 7px; height: 7px; border-radius: 2px; margin-top: 5px; flex: none; }
+      .seg-n { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+      .seg-l { font-size: 10px; color: var(--faint); margin-top: 3px; }
+      .sg { background: #0ca30c; } .sw { background: #fab219; } .sc { background: #d03b3b; }
+
+      /* Recent questions, dense. */
+      .q { width: 100%; border-collapse: collapse; margin-top: 9px; }
+      .q td { padding: 8px 0; border-bottom: 1px solid var(--line-soft); font-size: 11.5px; vertical-align: middle; }
+      .q tr:last-child td { border-bottom: 0; }
+      .q .txt { color: var(--ink); font-weight: 500; }
+      .src { display: inline-flex; gap: 3px; }
+      .src i {
+        font-style: normal; font-size: 9px; font-weight: 700; letter-spacing: 0.02em;
+        padding: 2px 5px; border-radius: 4px; background: var(--line-soft); color: var(--muted);
+      }
+      .cf { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 600; }
+      .cf .d { width: 6px; height: 6px; border-radius: 2px; }
+
+      /* The one signature element: the model, as an object. */
+      .orb-card { align-items: center; justify-content: center; text-align: center; }
+      .orb {
+        width: 86px; height: 86px; border-radius: 50%; margin: 2px auto 0;
+        background:
+          radial-gradient(circle at 34% 26%, #fff8e2 0%, #f3cb64 22%, #dfa818 52%, #a8760a 82%, #7d5606 100%);
+        box-shadow: 0 10px 22px -6px rgba(176, 126, 12, 0.5), inset 0 -6px 12px rgba(125, 86, 6, 0.4);
+        position: relative; animation: rise 0.7s var(--ease) 0.5s both;
+      }
+      .orb::after {
+        content: ''; position: absolute; inset: 0; border-radius: 50%;
+        background: radial-gradient(circle at 32% 22%, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0) 34%);
+      }
+      .orb-t { font-size: 12px; font-weight: 600; margin-top: 13px; }
+      .orb-s { font-size: 10.5px; color: var(--faint); margin-top: 5px; line-height: 1.5; }
+      .orb-in {
+        margin-top: auto; height: 32px; border-radius: 9px; background: var(--card);
+        border: 1px solid var(--line); display: flex; align-items: center; gap: 7px;
+        padding: 0 5px 0 11px; font-size: 11px; color: var(--faint); width: 100%;
+      }
+      .orb-go {
+        margin-left: auto; width: 23px; height: 23px; border-radius: 7px; flex: none;
+        background: linear-gradient(180deg, #e8b52e, #cf9712); color: #fff;
+        display: flex; align-items: center; justify-content: center;
+      }
+
+      @keyframes grow { from { transform: scaleY(0); opacity: 0; } to { transform: scaleY(1); opacity: 1; } }
+      @keyframes widen { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+      .mb-b, .seg-bar { transform-origin: bottom; }
+      .seg-bar { transform-origin: left; }
     </style>
   </head>
 
@@ -244,230 +491,141 @@
       <!-- --------------------------------------------------------- board -- -->
       <main class="board">
         <div class="crumbs">
-          Home <span>›</span> Application Center <span>›</span> <b>Workspace</b>
+          Home <span>&rsaquo;</span> Application Center <span>&rsaquo;</span> <b>Marketing Analytics</b>
         </div>
 
         <div class="head">
           <div>
-            <h1 class="h1">Workspace</h1>
-            <p class="h1-sub">Seismic activity · 605 months of records across 4 connected sources</p>
+            <h1 class="h1">Marketing Analytics</h1>
+            <p class="h1-sub">12 sources unified &middot; 4.2M rows queryable &middot; nothing replicated</p>
           </div>
           <div class="head-tools">
             <div class="chip live"><span class="dot"></span> Live</div>
-            <div class="chip">Last 12 months
+            <div class="chip">1 Oct &ndash; 31 Oct
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
             </div>
             <div class="chip">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
               Add widget
             </div>
-          </div>
-        </div>
-
-        <!-- KPI row -->
-        <div class="grid" style="margin-bottom:16px">
-          <div class="card kpi">
-            <div class="kpi-label">Total Spent</div>
-            <div class="kpi-row">
-              <div class="kpi-val">$682.5</div>
-              <div class="delta up">▲ 12.4%</div>
-            </div>
-          </div>
-          <div class="card kpi">
-            <div class="kpi-label">Queries Run</div>
-            <div class="kpi-row">
-              <div class="kpi-val">1,135</div>
-              <div class="delta up">▲ 8.1%</div>
-            </div>
-          </div>
-          <div class="card kpi">
-            <div class="kpi-label">Peak Monthly Events</div>
-            <div class="kpi-row">
-              <div class="kpi-val">795</div>
-              <div class="delta up">▲ 3.6%</div>
-            </div>
-          </div>
-          <div class="card kpi">
-            <div class="kpi-label">Avg Service Level</div>
-            <div class="kpi-row">
-              <div class="kpi-val">635</div>
-              <div class="delta down">▼ 2.2%</div>
+            <div class="btn-gold" style="height:34px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6.2 6.2l2 2M15.8 15.8l2 2M17.8 6.2l-2 2M8.2 15.8l-2 2"/></svg>
+              Ask
             </div>
           </div>
         </div>
 
-        <!-- Charts -->
-        <div class="grid" style="margin-bottom:16px">
-          <!-- Customer satisfaction, spans 2 -->
-          <div class="card" style="grid-column: span 2; height:346px">
-            <div class="card-head">
-              <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg>
-              <span class="card-title">Customer Satisfaction</span>
-              <svg class="kebab" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
-            </div>
-            <div class="card-note">Rolling 12-month average, both cohorts</div>
-
-            <svg viewBox="0 0 660 190" style="width:100%;flex:1;margin-top:10px" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="gGreen" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#10a37f" stop-opacity=".22"/>
-                  <stop offset="100%" stop-color="#10a37f" stop-opacity="0"/>
-                </linearGradient>
-                <linearGradient id="gBlue" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#3b82f6" stop-opacity=".20"/>
-                  <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
-                </linearGradient>
-              </defs>
-              <g stroke="#f1f3f7" stroke-width="1">
-                <line x1="0" y1="38" x2="660" y2="38"/><line x1="0" y1="76" x2="660" y2="76"/>
-                <line x1="0" y1="114" x2="660" y2="114"/><line x1="0" y1="152" x2="660" y2="152"/>
-              </g>
-              <path d="M0,42 L60,68 L120,52 L180,74 L240,44 L300,80 L360,96 L420,70 L480,86 L540,62 L600,74 L660,18 L660,190 L0,190 Z" fill="url(#gGreen)"/>
-              <path d="M0,42 L60,68 L120,52 L180,74 L240,44 L300,80 L360,96 L420,70 L480,86 L540,62 L600,74 L660,18" fill="none" stroke="#10a37f" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
-              <path d="M0,110 L60,88 L120,128 L180,150 L240,146 L300,124 L360,132 L420,128 L480,140 L540,120 L600,110 L660,58 L660,190 L0,190 Z" fill="url(#gBlue)"/>
-              <path d="M0,110 L60,88 L120,128 L180,150 L240,146 L300,124 L360,132 L420,128 L480,140 L540,120 L600,110 L660,58" fill="none" stroke="#3b82f6" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
-              <g fill="#10a37f"><circle cx="0" cy="42" r="3.4"/><circle cx="240" cy="44" r="3.4"/><circle cx="660" cy="18" r="4.2"/></g>
-              <g fill="#b6820c"><circle cx="60" cy="88" r="3.4"/><circle cx="180" cy="150" r="3.4"/><circle cx="660" cy="58" r="4.2"/></g>
-            </svg>
-
-            <div class="legend">
-              <div><span class="sq" style="background:#10a37f"></span> This cohort <b>$3,004</b></div>
-              <div><span class="sq" style="background:#3b82f6"></span> Last month <b>$3,004</b></div>
-            </div>
+        <div class="grid" style="margin-bottom:14px">
+          <div class="card k">
+            <div class="k-top"><span class="k-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 01-8 8H7l-4 3v-6a8 8 0 018-8h2a8 8 0 018 3z"/></svg></span><span class="k-lbl">Questions answered</span></div>
+            <div class="k-row"><span class="k-val">1,842</span><span class="delta up">&#9650; 12.4%</span></div>
+            <div class="k-vs">vs 1,639 last period</div>
           </div>
-
-          <!-- Volume vs service level -->
-          <div class="card" style="height:346px">
-            <div class="card-head">
-              <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg>
-              <span class="card-title">Volume vs Service Level</span>
-              <svg class="kebab" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
-            </div>
-            <div class="card-note">Stacked by fulfilment channel</div>
-
-            <svg viewBox="0 0 300 190" style="width:100%;flex:1;margin-top:10px" preserveAspectRatio="none">
-              <g stroke="#f1f3f7" stroke-width="1">
-                <line x1="0" y1="47" x2="300" y2="47"/><line x1="0" y1="95" x2="300" y2="95"/><line x1="0" y1="143" x2="300" y2="143"/>
-              </g>
-              <g>
-                <rect x="14"  y="62"  width="26" height="70" rx="3" fill="#b6820c"/><rect x="14"  y="132" width="26" height="58" rx="3" fill="#10a37f"/>
-                <rect x="62"  y="30"  width="26" height="96" rx="3" fill="#b6820c"/><rect x="62"  y="126" width="26" height="64" rx="3" fill="#10a37f"/>
-                <rect x="110" y="52"  width="26" height="84" rx="3" fill="#b6820c"/><rect x="110" y="136" width="26" height="54" rx="3" fill="#10a37f"/>
-                <rect x="158" y="70"  width="26" height="66" rx="3" fill="#b6820c"/><rect x="158" y="136" width="26" height="54" rx="3" fill="#10a37f"/>
-                <rect x="206" y="88"  width="26" height="60" rx="3" fill="#b6820c"/><rect x="206" y="148" width="26" height="42" rx="3" fill="#10a37f"/>
-                <rect x="254" y="76"  width="26" height="66" rx="3" fill="#b6820c"/><rect x="254" y="142" width="26" height="48" rx="3" fill="#10a37f"/>
-              </g>
-            </svg>
-
-            <div class="legend">
-              <div><span class="sq" style="background:#b6820c"></span> Volume <b>1,135</b></div>
-              <div><span class="sq" style="background:#10a37f"></span> Service <b>635</b></div>
-            </div>
+          <div class="card k">
+            <div class="k-top"><span class="k-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 7.9-8 9-4.8-1.1-8-4.5-8-9V6l8-3z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></span><span class="k-lbl">Answered without review</span></div>
+            <div class="k-row"><span class="k-val">94.2%</span><span class="delta up">&#9650; 2.1%</span></div>
+            <div class="k-vs">vs 92.1% last period</div>
           </div>
+          <div class="card k">
+            <div class="k-top"><span class="k-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span><span class="k-lbl">Median time to answer</span></div>
+            <div class="k-row"><span class="k-val">2.4s</span><span class="delta up">&#9660; 0.8s</span></div>
+            <div class="k-vs">vs 3.2s last period</div>
+          </div>
+          <div class="card k">
+            <div class="k-top"><span class="k-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 14.5l5-5"/><path d="M11 6.5l1.6-1.6a4 4 0 115.6 5.6L16.5 12"/><path d="M13 17.5l-1.6 1.6a4 4 0 11-5.6-5.6L7.5 12"/></svg></span><span class="k-lbl">Joins inferred</span></div>
+            <div class="k-row"><span class="k-val">318</span><span class="delta up">&#9650; 26</span></div>
+            <div class="k-vs">vs 292 last period</div>
+          </div>
+        </div>
 
-          <!-- Traffic by location -->
-          <div class="card" style="height:346px">
+        <div class="grid" style="margin-bottom:14px">
+          <div class="card" style="grid-column: span 2; height:286px">
             <div class="card-head">
-              <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg>
-              <span class="card-title">Traffic By Location</span>
-              <svg class="kebab" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+              <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg><span class="card-title">Questions answered</span>
+              <span class="card-note" style="margin-left:auto">Per month &middot; all sources</span>
             </div>
-            <div class="card-note">Share of sessions by region</div>
-
-            <div style="display:grid;place-items:center;margin:14px 0 4px">
-              <svg width="132" height="132" viewBox="0 0 42 42">
-                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#f1f3f7" stroke-width="7"/>
-                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#344054" stroke-width="7"
-                        stroke-dasharray="52.1 47.9" stroke-dashoffset="25" stroke-linecap="butt"/>
-                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#dfa818" stroke-width="7"
-                        stroke-dasharray="22.8 77.2" stroke-dashoffset="-27.1" stroke-linecap="butt"/>
-                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#10a37f" stroke-width="7"
-                        stroke-dasharray="13.9 86.1" stroke-dashoffset="-49.9" stroke-linecap="butt"/>
-                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#93c5fd" stroke-width="7"
-                        stroke-dasharray="11.2 88.8" stroke-dashoffset="-63.8" stroke-linecap="butt"/>
-                <text x="21" y="20.4" text-anchor="middle" font-size="5.4" font-weight="700" fill="#0f1729">52.1%</text>
-                <text x="21" y="25" text-anchor="middle" font-size="2.6" fill="#98a2b3">UNITED STATES</text>
+            <div class="card-note">2,248 this year, across twelve connected systems</div>
+            <div style="position:relative;flex:1;margin-top:10px">
+              <div style="position:absolute;left:72.7%;top:35.2%;transform:translate(-50%,-132%)">
+                <div class="tip"><b>217 answered</b><i>Sep &middot; 1 held for review</i></div>
+              </div>
+              <svg viewBox="0 0 640 132" style="width:100%;height:100%" preserveAspectRatio="none">
+                <defs><linearGradient id="gA" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#dfa818" stop-opacity=".2"/><stop offset="100%" stop-color="#dfa818" stop-opacity="0"/>
+                </linearGradient></defs>
+                <path d="M0.0,114.6 L58.2,108.8 L116.4,97.2 L174.5,90.7 L232.7,80.5 L290.9,74.0 L349.1,62.4 L407.3,55.1 L465.5,46.4 L523.6,38.4 L581.8,29.0 L640.0,18.2 L640,132 L0,132 Z" fill="url(#gA)"/>
+                <path d="M0.0,114.6 L58.2,108.8 L116.4,97.2 L174.5,90.7 L232.7,80.5 L290.9,74.0 L349.1,62.4 L407.3,55.1 L465.5,46.4 L523.6,38.4 L581.8,29.0 L640.0,18.2" fill="none" stroke="#b6820c" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
               </svg>
+              <div style="position:absolute;left:72.7%;top:35.2%;width:9px;height:9px;margin-left:-4.5px;margin-top:-4.5px;border-radius:50%;background:#b6820c;box-shadow:0 0 0 3px #fff,0 0 0 4.5px rgba(182,130,12,.3)"></div>
             </div>
+            <div class="mb-x" style="margin-top:9px"><span>Jan</span><span>Mar</span><span>May</span><span>Jul</span><span class="on">Sep</span><span>Nov</span></div>
+          </div>
 
-            <div class="rows">
-              <div class="row"><span class="sq" style="background:#344054"></span><span class="nm">United States</span><span class="vl">52.1%</span></div>
-              <div class="row"><span class="sq" style="background:#dfa818"></span><span class="nm">Canada</span><span class="vl">22.8%</span></div>
-              <div class="row"><span class="sq" style="background:#10a37f"></span><span class="nm">Mexico</span><span class="vl">13.9%</span></div>
-              <div class="row"><span class="sq" style="background:#93c5fd"></span><span class="nm">Other</span><span class="vl">11.2%</span></div>
+          <div class="card" style="height:286px">
+            <div class="card-head"><svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg><span class="card-title">Answered without review</span></div>
+            <div class="card-note">Model settled it alone</div>
+            <div class="gauge-wrap">
+              <svg viewBox="0 0 152 152" style="width:152px;height:152px"><line x1="39.0" y1="104.9" x2="30.3" y2="111.7" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="36.0" y1="100.7" x2="26.7" y2="106.5" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="33.6" y1="96.2" x2="23.7" y2="101.0" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="31.6" y1="91.5" x2="21.2" y2="95.1" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="30.2" y1="86.6" x2="19.5" y2="89.1" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="29.3" y1="81.5" x2="18.4" y2="82.8" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="29.0" y1="76.4" x2="18.0" y2="76.5" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="29.2" y1="71.3" x2="18.3" y2="70.2" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="30.0" y1="66.3" x2="19.3" y2="64.0" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="31.4" y1="61.3" x2="20.9" y2="57.9" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="33.2" y1="56.6" x2="23.2" y2="52.0" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="35.6" y1="52.0" x2="26.1" y2="46.4" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="38.4" y1="47.8" x2="29.6" y2="41.2" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="41.7" y1="43.8" x2="33.7" y2="36.3" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="45.4" y1="40.3" x2="38.3" y2="32.0" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="49.5" y1="37.2" x2="43.3" y2="28.1" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="53.9" y1="34.5" x2="48.7" y2="24.8" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="58.5" y1="32.4" x2="54.4" y2="22.2" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="63.4" y1="30.7" x2="60.4" y2="20.1" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="68.4" y1="29.6" x2="66.6" y2="18.8" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="73.4" y1="29.1" x2="72.8" y2="18.1" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="78.6" y1="29.1" x2="79.2" y2="18.1" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="83.6" y1="29.6" x2="85.4" y2="18.8" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="88.6" y1="30.7" x2="91.6" y2="20.1" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="93.5" y1="32.4" x2="97.6" y2="22.2" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="98.1" y1="34.5" x2="103.3" y2="24.8" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="102.5" y1="37.2" x2="108.7" y2="28.1" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="106.6" y1="40.3" x2="113.7" y2="32.0" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="110.3" y1="43.8" x2="118.3" y2="36.3" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="113.6" y1="47.8" x2="122.4" y2="41.2" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="116.4" y1="52.0" x2="125.9" y2="46.4" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="118.8" y1="56.6" x2="128.8" y2="52.0" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="120.6" y1="61.3" x2="131.1" y2="57.9" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="122.0" y1="66.3" x2="132.7" y2="64.0" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="122.8" y1="71.3" x2="133.7" y2="70.2" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="123.0" y1="76.4" x2="134.0" y2="76.5" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="122.7" y1="81.5" x2="133.6" y2="82.8" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="121.8" y1="86.6" x2="132.5" y2="89.1" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="120.4" y1="91.5" x2="130.8" y2="95.1" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="118.4" y1="96.2" x2="128.3" y2="101.0" stroke="#dfa818" stroke-width="3" stroke-linecap="round" opacity=".9"/><line x1="116.0" y1="100.7" x2="125.3" y2="106.5" stroke="#e7eaf0" stroke-width="3" stroke-linecap="round"/><line x1="113.0" y1="104.9" x2="121.7" y2="111.7" stroke="#e7eaf0" stroke-width="3" stroke-linecap="round"/></svg>
+              <div class="gauge-mid"><div class="gauge-v">94.2%</div><div class="gauge-c">1,735 of 1,842</div></div>
             </div>
+          </div>
+
+          <div class="card" style="height:286px">
+            <div class="card-head"><svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg><span class="card-title">Load by source</span></div>
+            <div class="card-note">Queries routed, last 30 days</div>
+            <div class="mb">
+              <div class="mb-col"><div class="mb-b" style="height:79%;animation-delay:0.40s"></div></div>
+              <div class="mb-col"><div class="mb-b" style="height:62%;animation-delay:0.44s"></div></div>
+              <div class="mb-col"><div class="mb-b on" style="height:91%;animation-delay:0.48s"></div></div>
+              <div class="mb-col"><div class="mb-b" style="height:33%;animation-delay:0.52s"></div></div>
+              <div class="mb-col"><div class="mb-b" style="height:44%;animation-delay:0.56s"></div></div>
+              <div class="mb-col"><div class="mb-b" style="height:24%;animation-delay:0.60s"></div></div>
+            </div>
+            <div class="mb-x"><span>Pg</span><span>Mg</span><span class="on">Sql</span><span>Xls</span><span>S3</span><span>Api</span></div>
           </div>
         </div>
 
-        <!-- Bottom row -->
         <div class="grid">
-          <!-- Total spent, spans 3 -->
-          <div class="card" style="grid-column: span 3; height:322px">
+          <div class="card" style="grid-column: span 2; height:330px">
             <div class="card-head">
-              <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg>
-              <span class="card-title">Total Spent</span>
-              <span style="font-size:12px;color:var(--muted);margin-left:6px">$682.5 · June is 3.8× the monthly floor</span>
-              <svg class="kebab" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+              <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg><span class="card-title">Recent questions</span>
+              <span class="card-note" style="margin-left:auto">Asked in English</span>
             </div>
-
-            <svg viewBox="0 0 1000 206" style="width:100%;flex:1;margin-top:12px" preserveAspectRatio="none">
-              <line x1="0" y1="34" x2="946" y2="34" stroke="#b6820c" stroke-width="1.4" stroke-dasharray="7 6" opacity=".7"/>
-              <text x="954" y="38" font-size="12" fill="#b6820c" font-weight="600">$179</text>
-              <g fill="#fdf3d6">
-                <rect x="6"   y="106" width="52" height="74"  rx="5"/>
-                <rect x="84"  y="52"  width="52" height="128" rx="5"/>
-                <rect x="162" y="88"  width="52" height="92"  rx="5"/>
-                <rect x="240" y="78"  width="52" height="102" rx="5"/>
-                <rect x="318" y="96"  width="52" height="84"  rx="5"/>
-              </g>
-              <rect x="396" y="24" width="52" height="156" rx="5" fill="#4917e6"/>
-              <g fill="#fdf3d6">
-                <rect x="474" y="100" width="52" height="80"  rx="5"/>
-                <rect x="552" y="58"  width="52" height="122" rx="5"/>
-                <rect x="630" y="128" width="52" height="52"  rx="5"/>
-                <rect x="708" y="70"  width="52" height="110" rx="5"/>
-                <rect x="786" y="112" width="52" height="68"  rx="5"/>
-                <rect x="864" y="90"  width="52" height="90"  rx="5"/>
-              </g>
-              <g font-size="12" fill="#98a2b3" text-anchor="middle">
-                <text x="32"  y="199">Jan</text><text x="110" y="199">Feb</text>
-                <text x="188" y="199">Mar</text><text x="266" y="199">Apr</text>
-                <text x="344" y="199">May</text>
-                <text x="422" y="199" fill="#4917e6" font-weight="700">Jun</text>
-                <text x="500" y="199">Jul</text><text x="578" y="199">Aug</text>
-                <text x="656" y="199">Sep</text><text x="734" y="199">Oct</text>
-                <text x="812" y="199">Nov</text><text x="890" y="199">Dec</text>
-              </g>
-            </svg>
-
-
-          </div>
-
-          <!-- Connected sources -->
-          <div class="card" style="height:322px">
-            <div class="card-head">
-              <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg>
-              <span class="card-title">Connected Sources</span>
-              <svg class="kebab" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
-            </div>
-            <div class="card-note">4 of 300+ import methods in use</div>
-
-            <table>
-              <thead><tr><th>Source</th><th>Tables</th><th style="text-align:right">Sync</th></tr></thead>
+            <div class="card-note">Each one names the systems it had to cross</div>
+            <table class="q">
               <tbody>
-                <tr><td class="n">MongoDB</td><td>34</td><td style="text-align:right"><span class="pill ok">Live</span></td></tr>
-                <tr><td class="n">Postgres</td><td>18</td><td style="text-align:right"><span class="pill ok">Live</span></td></tr>
-                <tr><td class="n">Snowflake</td><td>52</td><td style="text-align:right"><span class="pill warn">Queued</span></td></tr>
-                <tr><td class="n">S3 Parquet</td><td>9</td><td style="text-align:right"><span class="pill ok">Live</span></td></tr>
+                <tr><td class="txt">Which distributors slipped below 95% service level?</td><td style="width:150px"><span class="src"><i>MSSQL</i><i>MONGO</i><i>PG</i></span></td><td style="width:96px"><span class="cf"><span class="d sg"></span>Answered</span></td><td class="mono" style="width:40px;text-align:right;color:var(--faint);font-size:10.5px">2m</td></tr>
+                <tr><td class="txt">Total exposure on late shipments, Q3 vs Q2</td><td style="width:150px"><span class="src"><i>PG</i><i>XLS</i></span></td><td style="width:96px"><span class="cf"><span class="d sg"></span>Answered</span></td><td class="mono" style="width:40px;text-align:right;color:var(--faint);font-size:10.5px">14m</td></tr>
+                <tr><td class="txt">Which SKUs did we stock out of in the north region?</td><td style="width:150px"><span class="src"><i>PG</i><i>MONGO</i></span></td><td style="width:96px"><span class="cf"><span class="d sw"></span>Check</span></td><td class="mono" style="width:40px;text-align:right;color:var(--faint);font-size:10.5px">38m</td></tr>
+                <tr><td class="txt">Margin by channel after the freight revision</td><td style="width:150px"><span class="src"><i>MSSQL</i><i>XLS</i><i>S3</i></span></td><td style="width:96px"><span class="cf"><span class="d sg"></span>Answered</span></td><td class="mono" style="width:40px;text-align:right;color:var(--faint);font-size:10.5px">1h</td></tr>
+                <tr><td class="txt">Who approved the credit note on order 88214?</td><td style="width:150px"><span class="src"><i>PG</i></span></td><td style="width:96px"><span class="cf"><span class="d sc"></span>Review</span></td><td class="mono" style="width:40px;text-align:right;color:var(--faint);font-size:10.5px">2h</td></tr>
+                <tr><td class="txt">Freight spend per lane against the Q3 budget</td><td style="width:150px"><span class="src"><i>XLS</i><i>PG</i></span></td><td style="width:96px"><span class="cf"><span class="d sg"></span>Answered</span></td><td class="mono" style="width:40px;text-align:right;color:var(--faint);font-size:10.5px">3h</td></tr>
+                <tr><td class="txt">Which invoices are unmatched across the two ledgers?</td><td style="width:150px"><span class="src"><i>MSSQL</i><i>PG</i><i>S3</i></span></td><td style="width:96px"><span class="cf"><span class="d sw"></span>Check</span></td><td class="mono" style="width:40px;text-align:right;color:var(--faint);font-size:10.5px">5h</td></tr>
               </tbody>
             </table>
+          </div>
 
-            <div class="row" style="margin-top:auto;padding-top:12px;border-top:1px solid var(--line-soft)">
-              <span class="nm" style="color:var(--muted)">Storage used</span>
-              <span class="vl">113 / 250 GB</span>
+          <div class="card" style="height:330px">
+            <div class="card-head"><svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg><span class="card-title">Where answers land</span></div>
+            <div class="card-note">The rung decides what ships with the answer</div>
+            <div class="segbar"><div class="seg-s sg" style="flex:94;min-width:7px;animation-delay:0.45s"></div><div class="seg-s sw" style="flex:5;min-width:7px;animation-delay:0.52s"></div><div class="seg-s sc" style="flex:1;min-width:7px;animation-delay:0.59s"></div></div>
+            <div class="seg-keys">
+                <div class="seg-k"><span class="d sg"></span><div><div class="seg-n">1,735</div><div class="seg-l">Answered</div></div></div>
+                <div class="seg-k"><span class="d sw"></span><div><div class="seg-n">104</div><div class="seg-l">Flagged</div></div></div>
+                <div class="seg-k"><span class="d sc"></span><div><div class="seg-n">3</div><div class="seg-l">Review</div></div></div>
             </div>
-            <div class="bar-tr" style="width:100%;margin-top:7px">
-              <div class="bar-fl" style="width:45%;background:var(--gold)"></div>
+            <div style="margin-top:auto;padding-top:12px;border-top:1px solid var(--line-soft);font-size:11px;color:var(--muted);line-height:1.5">
+              Below the last rung the model stops answering and the question goes to a review manager. <b>0.2%</b> reached one this month, down from 1.8%.
+            </div>
+          </div>
+
+          <div class="card orb-card" style="height:330px">
+            <div class="orb"></div>
+            <div class="orb-t">Ask anything</div>
+            <div class="orb-s">It picks the sources, writes the SQL,<br/>and shows you both.</div>
+            <div class="orb-in mono">
+              Which distributors&hellip;
+              <span class="orb-go"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
             </div>
           </div>
         </div>

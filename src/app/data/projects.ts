@@ -51,6 +51,8 @@ export interface Project {
   ongoing?: boolean;
   /** When ongoing work started, for the case-study timeline. */
   started?: string;
+  /** When finished work ended. With `started`, this gives a real timeline. */
+  ended?: string;
   /** A public URL, if the work shipped somewhere a visitor can look at it. */
   liveUrl?: string;
   outcome: string;
@@ -78,17 +80,21 @@ export const projects: Project[] = [
   {
     id: 'query-ai',
     index: '01',
-    title: 'Query.ai',
+    title: 'Qwry.AI',
     org: NEUROMOTION,
-    domain: 'Enterprise data analytics & AI',
+    domain: 'AI-native data intelligence',
     role: 'Product Designer',
     contribution: 'Sole designer',
-    outcome: '[What it made possible that was not possible before.]',
-    year: YEAR,
+    liveUrl: 'https://qwry.ai',
+    outcome:
+      'A question asked in plain English, answered across databases that were never built to be read together — with the SQL behind the answer shown, so the answer can be checked rather than trusted.',
+    year: '2025 — 2026',
+    started: 'May 2025',
+    ended: 'Feb 2026',
     context:
-      'A data platform for large enterprises. Organisations connect their databases — through more than 300 import methods — and build their own analytics on top: choosing how a dataset is visualised, which chart carries it, and how it should be analysed. It runs its own LLM, and role-based access control spans multiple departments and groups inside one organisation.',
+      'An enterprise data platform built on a premise that shapes every screen in it: unify the data without moving it. Organisations connect the systems they already run — SQL and NoSQL databases, spreadsheets, files, SaaS tools — and the platform infers the relationships between them, builds a governed warehouse across the lot, and answers questions asked in plain English. Nothing is replicated; the data stays on the customer’s own infrastructure. It runs its own LLM, every answer carries the SQL that produced it, and role-based access control spans departments and groups inside one organisation.',
     responsibility:
-      'Designed the entire platform independently, working directly with the founder. The most complex thing I have designed.',
+      'Sole designer on the platform that became Qwry.AI — I designed it independently, working directly with the founder, and it is the most complex thing I have designed. It shipped under an earlier name and has grown since I left it: the product sold today carries features I did not design. What follows is the part that was mine.',
     category: 'Sole designer',
     tags: ['Data visualisation', 'LLM', 'RBAC', 'Enterprise'],
     platforms: ['desktop'],
@@ -623,22 +629,90 @@ const soleDesignerOwnership = {
 
 const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
   'query-ai': {
+    businessProblem:
+      'A large organisation typically runs three sources of truth and none of them agree — the finance system, the spreadsheets operations actually works from, and customer data somewhere else again. Reconciling them is manual, so the answer arrives after the decision needed it. The existing fix was to move all of it into a lakehouse, which is a project, not a product.',
+    userProblem:
+      'The people who need an answer are not the people who can write the query. Analysts could describe the question but not express it against half a dozen unlike databases; the ones who could write SQL had to learn each source’s shape first. And an AI that answers in confident prose is no use against governed data — if the answer cannot be checked, it cannot be acted on.',
     ownership: {
       whatIDid: [
         'Designed the entire platform independently, working directly with the founder',
         'Structured how organisations model departments and groups under role-based access',
         'Designed the analytics builder: how a dataset becomes a chart, and who chooses',
-        '[Add how you approached designing for its LLM]',
+        'Designed how the LLM behaves for enterprise use — the dataset-scoped prompt path, and the confidence ladder that decides whether an answer ships plainly, with a reference, with a warning, or to a human reviewer first',
+        'Tested the flows, drove the improvements that came out of testing, and put the suggestions behind them to the founder',
       ],
-      whatIDidNot: ['Did not write the production code', '[Anything else outside your scope]'],
+      whatIDidNot: ['Did not write the production code — the design was mine end to end, the build was not'],
     },
     context: {
       teamSize: 'Me and the founder, working closely',
       techLimitations: [
-        'Had to accommodate data arriving through more than 300 different import methods',
-        '[Another real constraint]',
+        'Data arrived through scores of unlike import paths — the platform lists more than 120 connectors — and no two of them presented the same shape',
+        'Token cost set the shape of the AI. At this data volume a model allowed to search the whole estate made a single small question expensive, so the design had to narrow what it could see before it answered',
+        'Every workspace had to stay governable — model and version, query access level, execution limits, export format and size, and logging all had to be an administrator’s choice rather than a default',
       ],
-      businessGoals: ['[Goal one]', '[Goal two]'],
+      /* Empty on purpose. The founder's commercial goals were his, and stating
+         them second-hand would be guesswork on the one page where guesswork is
+         least affordable. The section hides itself rather than showing a
+         heading over nothing. */
+      businessGoals: [],
+    },
+    designDecisions: [
+      {
+        problem:
+          'The first design put every imported database into one file-explorer tree and let people build their datasets inside it. That holds for a handful of sources. It does not hold for an organisation running fifty or a hundred databases across teams of thousands, where no two people should see the same slice of the estate.',
+        optionChosen:
+          'A module above the file explorer, where imported sources are managed as sources — connections, schemas, tables — and where datasets are created. Access is assigned there, per team and per employee, so who can see what is settled when data enters the platform rather than when someone queries it.',
+        whyOthersRejected:
+          'The file-explorer-only version was built first and it was the more elegant idea: one tree, one habit, every source in it. It lost because it made everything equally visible to anyone who could open the tree — workable for a small team, disqualifying at enterprise scale, where the access question is the whole point.',
+      },
+      {
+        problem:
+          'The intent was our own LLM that a user could query directly and work with the data freely. At enterprise data volumes that breaks on cost before it breaks on anything else: one small question burns an enormous number of tokens when the model has the entire estate to search.',
+        optionChosen:
+          'Datasets scoped to the person asking. A prompt begins by choosing a dataset, and the model works inside it — narrowing to the related table, then the column, then the row, before it answers.',
+        whyOthersRejected:
+          'Letting the model range over everything was the original plan and the easier product to explain. It lost on token cost at the data sizes this is built for. Scoping turned out to carry the access model too: a person queries what they have been given, not what exists.',
+      },
+      {
+        problem:
+          'A public LLM being wrong is an annoyance. An enterprise LLM being wrong about a number someone then acts on is a liability. The model could not answer in one register regardless of how sure it was.',
+        optionChosen:
+          'The answer changes shape with the model’s own confidence. Sure, and it answers. Slight doubt, and it answers but says to check. Lower, and the answer carries a badge and the reference it came from. Lower still, and a warning goes with it. Below that it does not answer yet — it re-runs its own process two or three times to see whether it converges. If it still cannot get there, the question escalates to a review manager, and the user sees it only after a person has approved it.',
+        whyOthersRejected:
+          'Our own model answering directly, the way a public one does, was the first intent and the thing the final design was built against. At enterprise stakes a confident wrong answer is worse than a held one, so uncertainty had to be visible on the answer itself and, past a threshold, had to stop being the model’s decision at all.',
+      },
+    ],
+    research: {
+      keyFindings: [
+        'The file-explorer model I had designed did not survive the real case. An enterprise runs fifty or a hundred databases, not a handful, and its teams are large enough that who sees which slice is the first question rather than the last',
+        'Token cost, not model quality, was going to decide whether the AI was usable at this volume — a model free to search the whole estate made one small question expensive',
+      ],
+      painPoints: [
+        'Teams needed different slices of the same estate, and nothing in the first design could express that',
+        'An answer a person could not trace back to a source was an answer they would not act on',
+      ],
+    },
+    impact: {
+      /* What the product became, not a claim that this design produced it.
+         The work shipped and the product has grown past it — that is the
+         honest signal, and it is a good one. Anything the design itself
+         moved belongs in metrics, and only Ansh has those. */
+      metrics: [],
+      outcomes: [
+        'The work shipped, and the product it became sells publicly at qwry.ai across power and distribution, manufacturing, supply chain, e-commerce and procurement',
+        'The connect-and-unify flow I designed now carries forty-plus source integrations, from Postgres and MongoDB through spreadsheets, files and SaaS tools',
+        'The spine of the product is still the path this design was built around — raw source to a verified answer you can check, with the SQL always in reach',
+      ],
+      learnings: [],
+    },
+    reflection: {
+      /* Empty on purpose — see businessGoals above. */
+      improvements: [],
+      learnings: [
+        'To research narrowly and precisely rather than broadly. The two findings that redirected this product were specific questions asked properly, not a survey of the field',
+        'That designing a product in depth is a different craft from designing screens. What mattered here sat underneath the interface — what the system does when it is unsure, and who it turns to',
+        'To go at the critical problem rather than around it. The file-explorer version was the comfortable design; the scale and access problem was the real one, and it had to be met head on',
+      ],
     },
   },
   'fleet-management': {
@@ -816,6 +890,25 @@ function extraShots(project: Project): CaseStudyScreen[] {
   }));
 }
 
+/**
+ * Ongoing work reads from its start; finished work reads start to end, with
+ * the run length worked out rather than typed, so it cannot drift from the
+ * dates beside it. Only a project with neither falls back to a placeholder.
+ */
+function caseStudyTimeline(project: Project): string {
+  if (project.ongoing) return `${project.started ?? '[Start]'} — ongoing`;
+  if (!project.started || !project.ended) return '[Start — end, and how long it ran]';
+
+  const span = `${project.started} — ${project.ended}`;
+  const from = new Date(`${project.started} 1`);
+  const to = new Date(`${project.ended} 1`);
+  if (Number.isNaN(from.valueOf()) || Number.isNaN(to.valueOf())) return span;
+
+  const months =
+    (to.getFullYear() - from.getFullYear()) * 12 + (to.getMonth() - from.getMonth()) + 1;
+  return months > 0 ? `${span} · ${months} months` : span;
+}
+
 export function getCaseStudy(id: string | undefined): CaseStudy | undefined {
   const project = getProject(id);
   if (!project) return undefined;
@@ -827,7 +920,7 @@ export function getCaseStudy(id: string | undefined): CaseStudy | undefined {
     projectName: project.title,
     productType: project.domain,
     role: project.role,
-    timeline: project.ongoing ? `${project.started ?? 'Apr 2026'} — ongoing` : '[Start — end, and how long it ran]',
+    timeline: caseStudyTimeline(project),
     screens: [...galleryFor(project), ...extraShots(project)],
   };
 }
