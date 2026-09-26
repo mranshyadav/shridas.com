@@ -333,53 +333,93 @@
         *, *::before, *::after { animation: none !important; transition: none !important; }
       }
 
-      /* ------------------------------------------- confidence dashboard -- */
+      /* --------------------------------------------------- answer canvas -- */
 
-      /* Volume: one series, so it wears the brand gold and needs no legend -
-         the card title names it. */
-      .vbar-plot { display: flex; align-items: flex-end; gap: 12px; flex: 1; margin-top: 16px; }
-      .vbar-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
-      .vbar {
-        width: 100%; border-radius: 5px 5px 3px 3px;
-        background: linear-gradient(180deg, #e8b52e 0%, #dfa818 58%, #cf9712 100%);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
-        transform-origin: bottom; animation: grow 0.66s var(--ease) both;
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
+
+      /* The question, and what came back. */
+      .ask-card { padding: 20px 22px 18px; }
+      .ask-eyebrow {
+        font-size: 10.5px; font-weight: 600; letter-spacing: 0.07em;
+        text-transform: uppercase; color: var(--faint);
+        display: flex; align-items: center; gap: 8px;
       }
-      .vbar.on { background: linear-gradient(180deg, #c99310 0%, #b6820c 100%); }
-      .vbar-axis { display: flex; gap: 12px; margin-top: 10px; }
-      .vbar-axis span { flex: 1; text-align: center; font-size: 10.5px; color: var(--faint); }
-      .vbar-axis span.on { color: var(--ink-2); font-weight: 600; }
-      .vbar-val {
-        font-size: 10.5px; font-weight: 600; color: var(--ink-2);
-        text-align: center; margin-bottom: 6px; animation: rise 0.6s var(--ease) 0.5s both;
+      .ask-q {
+        font-size: 21px; font-weight: 600; letter-spacing: -0.024em; line-height: 1.32;
+        margin-top: 10px; max-width: 72ch;
+      }
+      .ask-q .lit { color: var(--gold-deep); box-shadow: inset 0 -0.42em 0 var(--gold-tint); }
+      .ask-foot { display: flex; align-items: flex-end; gap: 30px; margin-top: 17px; }
+      .ask-ans { font-size: 32px; font-weight: 700; letter-spacing: -0.035em; line-height: 1; }
+      .ask-ans span { font-size: 15px; font-weight: 600; color: var(--muted); letter-spacing: -0.01em; }
+      .ask-sub { font-size: 11.5px; color: var(--muted); margin-bottom: 5px; }
+      .ask-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+      .vchip {
+        height: 30px; padding: 0 12px; border-radius: 8px; font-size: 12px; font-weight: 600;
+        display: flex; align-items: center; gap: 7px;
+        color: #0a7d0a; background: #eaf7ea; box-shadow: inset 0 0 0 1px rgba(12, 163, 12, 0.16);
+      }
+      .sqlchip {
+        height: 30px; padding: 0 12px; border-radius: 8px; background: var(--card);
+        border: 1px solid var(--line); color: var(--ink-2); font-weight: 600;
+        display: flex; align-items: center; gap: 7px;
       }
 
-      /* Status palette, state only, never a series colour. good/warning/critical
-         validated as adjacent pairs on this surface: CVD dE 11.3, normal-vision
-         dE 27.6. Warning sits under 3:1 against the card, so every step carries
-         its own label and colour never works alone. */
-      .st-good { background: #0ca30c; }
-      .st-warn { background: #fab219; }
-      .st-crit { background: #d03b3b; }
-
-      .ladder { display: flex; flex-direction: column; margin-top: 10px; }
-      .ladder-step {
-        display: flex; align-items: center; gap: 9px; font-size: 11.5px;
-        padding: 10px 0; animation: rise 0.5s var(--ease) both;
+      /* The trace: what the engine did, in order, with its working shown. */
+      .trace { display: flex; flex-direction: column; margin-top: 10px; flex: 1; }
+      .trace-step { display: flex; gap: 11px; padding: 7px 0; animation: rise 0.5s var(--ease) both; }
+      .trace-step + .trace-step { border-top: 1px solid var(--line-soft); }
+      .trace-tick {
+        width: 15px; height: 15px; border-radius: 50%; flex: none; margin-top: 1px;
+        background: #eaf7ea; color: #0a7d0a;
+        display: flex; align-items: center; justify-content: center;
       }
-      .ladder-step + .ladder-step { border-top: 1px solid var(--line-soft); }
-      .ladder-step .lbl { color: var(--ink-2); }
-      .ladder-step .ct { margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums; }
-      .ladder-dot { width: 7px; height: 7px; border-radius: 2px; flex: none; }
-      .ladder-foot {
+      .trace-body { min-width: 0; }
+      .trace-t { font-size: 12px; font-weight: 600; letter-spacing: -0.005em; }
+      .trace-d { color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .trace-ms { margin-left: auto; font-size: 10.5px; color: var(--faint); flex: none; padding-top: 2px; }
+
+      /* The rows behind the answer, each column tagged with where it came from. */
+      .ev { width: 100%; border-collapse: collapse; margin-top: 12px; }
+      .ev th {
+        text-align: left; padding: 0 0 9px; font-size: 10px; font-weight: 600;
+        letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint);
+        border-bottom: 1px solid var(--line);
+      }
+      .ev th i {
+        display: block; margin-top: 4px; font-size: 9.5px; letter-spacing: 0.02em;
+        text-transform: none; font-style: normal; font-weight: 600; color: var(--gold-deep);
+      }
+      .ev td { padding: 10px 0; font-size: 12.5px; border-bottom: 1px solid var(--line-soft); }
+      .ev td.nm { font-weight: 600; }
+      .ev td.num { font-variant-numeric: tabular-nums; }
+      .ev tr:last-child td { border-bottom: 0; }
+      .miss { color: #b4262a; font-weight: 600; }
+
+      /* Lineage: sources to tables to entities, the used path in gold. */
+      .gnode { font-size: 10.5px; font-weight: 600; fill: #344054; }
+      .gnode.dim { fill: #98a2b3; font-weight: 500; }
+      .gcol {
+        font-size: 9.5px; font-weight: 600; letter-spacing: 0.07em;
+        text-transform: uppercase; fill: #b8bfcb;
+      }
+
+      /* Which rung this answer landed on. */
+      .rungs { display: flex; flex-direction: column; margin-top: 10px; }
+      .rung {
+        display: flex; align-items: center; gap: 9px; padding: 8px 0; font-size: 11.5px;
+        color: var(--faint);
+      }
+      .rung + .rung { border-top: 1px solid var(--line-soft); }
+      .rung .dot9 { width: 7px; height: 7px; border-radius: 2px; flex: none; background: #d7dce4; }
+      .rung.hit { color: var(--ink); font-weight: 600; }
+      .rung.hit .dot9 { background: #0ca30c; box-shadow: 0 0 0 3px rgba(12, 163, 12, 0.14); }
+      .rung .n { margin-left: auto; font-variant-numeric: tabular-nums; font-weight: 600; }
+      .rung-foot {
         margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line-soft);
-        display: flex; align-items: baseline; gap: 7px;
+        font-size: 11px; color: var(--muted); line-height: 1.52;
       }
-      .ladder-foot .big { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
-      .ladder-foot .sm { font-size: 11px; color: var(--muted); }
-
-      @keyframes grow { from { transform: scaleY(0); opacity: 0; } to { transform: scaleY(1); opacity: 1; } }
-          </style>
+    </style>
   </head>
 
   <body>
@@ -438,195 +478,177 @@
       <!-- --------------------------------------------------------- board -- -->
       <main class="board">
         <div class="crumbs">
-          Home <span>&rsaquo;</span> Application Center <span>&rsaquo;</span> <b>Workspace</b>
+          Home <span>&rsaquo;</span> Application Center <span>&rsaquo;</span> Marketing Analytics <span>&rsaquo;</span> <b>Answer</b>
         </div>
 
         <div class="head">
           <div>
-            <h1 class="h1">Workspace</h1>
-            <p class="h1-sub">12 sources unified &middot; 4.2M rows queryable &middot; nothing replicated</p>
+            <h1 class="h1">Answer</h1>
+            <p class="h1-sub">Asked in English &middot; resolved across three systems &middot; nothing left its server</p>
           </div>
           <div class="head-tools">
             <div class="chip live"><span class="dot"></span> Live</div>
-            <div class="chip">Last 12 months
+            <div class="chip">Q3 FY25
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
             </div>
             <div class="chip">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-              Ask a question
+              Ask again
             </div>
           </div>
         </div>
 
-        <!-- KPI row -->
+        <!-- the question, and what came back -->
         <div class="grid" style="margin-bottom:16px">
-          <div class="card kpi">
-            <div class="kpi-label">Questions answered</div>
-            <div class="kpi-row"><div class="kpi-val">1,842</div><span class="delta up">&#9650; 12.4%</span></div>
-            <div class="card-note" style="margin-top:7px">Last 30 days</div>
-          </div>
-          <div class="card kpi">
-            <div class="kpi-label">Answered without review</div>
-            <div class="kpi-row"><div class="kpi-val">94.2%</div><span class="delta up">&#9650; 2.1%</span></div>
-            <div class="card-note" style="margin-top:7px">1,735 of 1,842</div>
-          </div>
-          <div class="card kpi">
-            <div class="kpi-label">Median time to answer</div>
-            <div class="kpi-row"><div class="kpi-val">2.4s</div><span class="delta up">&#9660; 0.8s</span></div>
-            <div class="card-note" style="margin-top:7px">Across 6 source types</div>
-          </div>
-          <div class="card kpi">
-            <div class="kpi-label">Cross-source joins</div>
-            <div class="kpi-row"><div class="kpi-val">318</div><span class="delta up">&#9650; 26</span></div>
-            <div class="card-note" style="margin-top:7px">Inferred, not configured</div>
+          <div class="card ask-card" style="grid-column: span 4">
+            <div class="ask-eyebrow">
+              <span class="dot" style="background:#dfa818"></span>
+              Asked 2 minutes ago &middot; Marketing Analytics workspace
+            </div>
+            <div class="ask-q">
+              Which distributors slipped below a <span class="lit">95% service level</span> last quarter, and what did it cost us?
+            </div>
+            <div class="ask-foot">
+              <div>
+                <div class="ask-sub">Distributors below target</div>
+                <div class="ask-ans">4 <span>of 38</span></div>
+              </div>
+              <div>
+                <div class="ask-sub">Exposure attributed</div>
+                <div class="ask-ans">&#8377;18.4<span>L</span></div>
+              </div>
+              <div>
+                <div class="ask-sub">Answered in</div>
+                <div class="ask-ans">2.1<span>s</span></div>
+              </div>
+              <div class="ask-right">
+                <div class="sqlchip mono" style="font-size:11.5px">SELECT &hellip; 4 tables</div>
+                <div class="vchip"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Verified against source</div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Volume, and what the model did when it was less sure -->
+        <!-- how it got there, and the rows it stands on -->
         <div class="grid" style="margin-bottom:16px">
-          <div class="card" style="grid-column: span 3; height:312px">
+          <div class="card" style="grid-column: span 2; height:330px">
             <div class="card-head">
               <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg>
-              <span class="card-title">Questions answered</span>
-              <span class="card-note" style="margin-left:auto">Per month, all sources</span>
+              <span class="card-title">How it got there</span>
+              <span class="card-note" style="margin-left:auto">6 steps &middot; 2.1s</span>
             </div>
-            <div class="card-note">Asked in plain English, resolved across twelve connected systems</div>
-
-            <div class="vbar-plot">
-            <div class="vbar-col">
-              <div class="vbar" style="height:45.2%"></div>
-            </div>
-            <div class="vbar-col">
-              <div class="vbar" style="height:48.2%"></div>
-            </div>
-            <div class="vbar-col">
-              <div class="vbar" style="height:54.0%"></div>
-            </div>
-            <div class="vbar-col">
-              <div class="vbar" style="height:57.4%"></div>
-            </div>
-            <div class="vbar-col">
-              <div class="vbar" style="height:62.5%"></div>
-            </div>
-            <div class="vbar-col">
-              <div class="vbar" style="height:65.8%"></div>
-            </div>
-            <div class="vbar-col">
-              <div class="vbar" style="height:71.7%"></div>
-            </div>
-            <div class="vbar-col">
-              <div class="vbar" style="height:75.4%"></div>
-            </div>
-            <div class="vbar-col">
-              <div class="vbar" style="height:79.8%"></div>
-            </div>
-            <div class="vbar-col">
-              <div class="vbar" style="height:83.8%"></div>
-            </div>
-            <div class="vbar-col">
-              <div class="vbar" style="height:88.6%"></div>
-            </div>
-            <div class="vbar-col">
-              <div class="vbar-val">256</div>
-              <div class="vbar on" style="height:94.1%"></div>
-            </div>
-            </div>
-            <div class="vbar-axis"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span class="on">Dec</span></div>
-          </div>
-
-          <div class="card" style="height:312px">
-            <div class="card-head">
-              <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg>
-              <span class="card-title">The confidence ladder</span>
-            </div>
-            <div class="card-note">What the model does when it is less sure</div>
-
-            <div class="ladder">
-            <div class="ladder-step" style="animation-delay:0.42s">
-              <span class="ladder-dot st-good"></span>
-              <span class="lbl">Answered outright</span>
-              <span class="ct">1,735</span>
-            </div>
-            <div class="ladder-step" style="animation-delay:0.47s">
-              <span class="ladder-dot st-warn"></span>
-              <span class="lbl">Answered, check suggested</span>
-              <span class="ct">71</span>
-            </div>
-            <div class="ladder-step" style="animation-delay:0.52s">
-              <span class="ladder-dot st-warn"></span>
-              <span class="lbl">Answer carries its reference</span>
-              <span class="ct">24</span>
-            </div>
-            <div class="ladder-step" style="animation-delay:0.57s">
-              <span class="ladder-dot st-crit"></span>
-              <span class="lbl">Answer carries a warning</span>
-              <span class="ct">9</span>
-            </div>
-            <div class="ladder-step" style="animation-delay:0.62s">
-              <span class="ladder-dot st-crit"></span>
-              <span class="lbl">Held for human review</span>
-              <span class="ct">3</span>
-            </div>
-            </div>
-
-            <div class="ladder-foot">
-              <span class="big">0.2%</span>
-              <span class="sm">reached a human &middot; was 1.8%</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Latency + sources -->
-        <div class="grid">
-          <div class="card" style="grid-column: span 2; height:292px">
-            <div class="card-head">
-              <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg>
-              <span class="card-title">Time to a verified answer</span>
-              <span class="card-note" style="margin-left:auto">Median, seconds</span>
-            </div>
-            <div class="card-note">Weeks to minutes was the claim &mdash; these are the minutes</div>
-
-            <svg viewBox="0 0 660 150" style="width:100%;flex:1;margin-top:14px" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#dfa818" stop-opacity=".2"/>
-                  <stop offset="100%" stop-color="#dfa818" stop-opacity="0"/>
-                </linearGradient>
-              </defs>
-              <g stroke="#f1f3f7" stroke-width="1">
-                <line x1="0" y1="37" x2="660" y2="37"/><line x1="0" y1="75" x2="660" y2="75"/><line x1="0" y1="113" x2="660" y2="113"/>
-              </g>
-              <path d="M0,18.1 L60,26.9 L120,33.4 L180,44.4 L240,53.1 L300,59.7 L360,66.25 L420,75 L480,79.4 L540,83.75 L600,88.1 L660,92.5 L660,150 L0,150 Z" fill="url(#gGold)"/>
-              <path d="M0,18.1 L60,26.9 L120,33.4 L180,44.4 L240,53.1 L300,59.7 L360,66.25 L420,75 L480,79.4 L540,83.75 L600,88.1 L660,92.5" fill="none" stroke="#b6820c" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
-              <circle cx="660" cy="92.5" r="4.5" fill="#b6820c" stroke="#fff" stroke-width="2"/>
-            </svg>
-            <div style="display:flex;justify-content:space-between;margin-top:9px;font-size:10.5px;color:var(--faint)">
-              <span>Jan &middot; 5.8s</span><span style="color:var(--ink-2);font-weight:600">Dec &middot; 2.4s</span>
+            <div class="card-note">The model&rsquo;s working, not a log behind a toggle</div>
+            <div class="trace">
+              <div class="trace-step" style="animation-delay:0.34s">
+                <span class="trace-tick"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+                <div class="trace-body">
+                  <div class="trace-t">Question scoped to a dataset</div>
+                  <div class="trace-d mono">Marketing Analytics &middot; 12 connected sources, 3 hold the answer</div>
+                </div>
+                <span class="trace-ms mono">0.2s</span>
+              </div>
+              <div class="trace-step" style="animation-delay:0.39s">
+                <span class="trace-tick"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+                <div class="trace-body">
+                  <div class="trace-t">Entities resolved against the ontology</div>
+                  <div class="trace-d mono">&ldquo;distributor&rdquo;, &ldquo;service level&rdquo;, &ldquo;last quarter&rdquo; &rarr; Q3 FY25</div>
+                </div>
+                <span class="trace-ms mono">0.3s</span>
+              </div>
+              <div class="trace-step" style="animation-delay:0.44s">
+                <span class="trace-tick"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+                <div class="trace-body">
+                  <div class="trace-t">Join inferred, not configured</div>
+                  <div class="trace-d mono">distributors.id &harr; sla_events.dist_ref &middot; no foreign key declared</div>
+                </div>
+                <span class="trace-ms mono">0.6s</span>
+              </div>
+              <div class="trace-step" style="animation-delay:0.49s">
+                <span class="trace-tick"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+                <div class="trace-body">
+                  <div class="trace-t">SQL written and shown</div>
+                  <div class="trace-d mono">1 statement &middot; 4 tables &middot; 2 cross-source joins</div>
+                </div>
+                <span class="trace-ms mono">0.4s</span>
+              </div>
+              <div class="trace-step" style="animation-delay:0.54s">
+                <span class="trace-tick"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+                <div class="trace-body">
+                  <div class="trace-t">Executed where the data lives</div>
+                  <div class="trace-d mono">nothing copied, nothing replicated</div>
+                </div>
+                <span class="trace-ms mono">0.5s</span>
+              </div>
+              <div class="trace-step" style="animation-delay:0.59s">
+                <span class="trace-tick"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+                <div class="trace-body">
+                  <div class="trace-t">Result checked against source rows</div>
+                  <div class="trace-d mono">4 of 4 rows re-derived and matched</div>
+                </div>
+                <span class="trace-ms mono">0.1s</span>
+              </div>
             </div>
           </div>
 
-          <div class="card" style="grid-column: span 2; height:292px">
+          <div class="card" style="grid-column: span 2; height:330px">
             <div class="card-head">
               <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg>
-              <span class="card-title">Connected sources</span>
-              <span class="card-note" style="margin-left:auto">Read-only, in place</span>
+              <span class="card-title">The rows behind it</span>
+              <span class="card-note" style="margin-left:auto">4 rows &middot; re-derived</span>
             </div>
-            <div class="card-note">12 of 120+ connectors in use</div>
+            <div class="card-note">Every column keeps the system it came from</div>
 
-            <table>
-              <thead><tr><th>Source</th><th>Tables</th><th>Joins found</th><th style="text-align:right">Sync</th></tr></thead>
+            <table class="ev">
+              <thead>
+                <tr>
+                  <th>Distributor<i>MS SQL</i></th>
+                  <th>Service level<i>MongoDB</i></th>
+                  <th>Orders<i>Postgres</i></th>
+                  <th style="text-align:right">Exposure<i>derived</i></th>
+                </tr>
+              </thead>
               <tbody>
-                <tr><td class="n">Postgres</td><td>48</td><td>126</td><td style="text-align:right"><span class="pill ok">Live</span></td></tr>
-                <tr><td class="n">MongoDB</td><td>34</td><td>74</td><td style="text-align:right"><span class="pill ok">Live</span></td></tr>
-                <tr><td class="n">MS SQL</td><td>52</td><td>68</td><td style="text-align:right"><span class="pill ok">Live</span></td></tr>
-                <tr><td class="n">Excel &amp; Sheets</td><td>19</td><td>31</td><td style="text-align:right"><span class="pill warn">Queued</span></td></tr>
-                <tr><td class="n">S3 &middot; JSON, XML</td><td>9</td><td>19</td><td style="text-align:right"><span class="pill ok">Live</span></td></tr>
+                <tr><td class="nm">Northgate Supply</td><td class="num miss">91.4%</td><td class="num">1,208</td><td class="num" style="text-align:right">&#8377;6.2L</td></tr>
+                <tr><td class="nm">Vale &amp; Croft</td><td class="num miss">93.0%</td><td class="num">874</td><td class="num" style="text-align:right">&#8377;4.8L</td></tr>
+                <tr><td class="nm">Pinebridge Dist.</td><td class="num miss">93.8%</td><td class="num">1,041</td><td class="num" style="text-align:right">&#8377;4.1L</td></tr>
+                <tr><td class="nm">Arden Logistics</td><td class="num miss">94.6%</td><td class="num">612</td><td class="num" style="text-align:right">&#8377;3.3L</td></tr>
               </tbody>
             </table>
 
             <div class="row" style="margin-top:auto;padding-top:12px;border-top:1px solid var(--line-soft)">
-              <span class="nm" style="color:var(--muted)">Held on customer infrastructure</span>
-              <span class="vl">100%</span>
+              <span class="nm mono" style="color:var(--muted)">exposure = orders &times; sla_credit_rate</span>
+              <span class="vl">&#8377;18.4L</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- what the platform had to know to answer at all -->
+        <div class="grid">
+          <div class="card" style="grid-column: span 3; height:276px">
+            <div class="card-head">
+              <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg>
+              <span class="card-title">Relationships this answer travelled</span>
+              <span class="card-note" style="margin-left:auto">Gold, the path used &nbsp;&bull;&nbsp; Dashed, discovered but unused</span>
+            </div>
+            <div class="card-note">318 joins inferred across the estate, not one of them declared</div>
+            <svg viewBox="0 0 1076 248" style="width:100%;flex:1;margin-top:8px" preserveAspectRatio="xMidYMid meet"><text class="gcol" x="94" y="12" text-anchor="end">Sources</text><text class="gcol" x="516" y="12" text-anchor="middle">Tables</text><text class="gcol" x="952" y="12" text-anchor="start">Entities</text><path d="M119,50 C269,50 357,196 507,196" fill="none" stroke="#dde3ea" stroke-width="1.4" stroke-dasharray="3 4"/><path d="M119,224 C269,224 357,236 507,236" fill="none" stroke="#dde3ea" stroke-width="1.4" stroke-dasharray="3 4"/><path d="M525,196 C675,196 777,74 927,74" fill="none" stroke="#dde3ea" stroke-width="1.4" stroke-dasharray="3 4"/><path d="M525,236 C675,236 777,136 927,136" fill="none" stroke="#dde3ea" stroke-width="1.4" stroke-dasharray="3 4"/><path d="M119,50 C269,50 357,48 507,48" fill="none" stroke="#dfa818" stroke-width="1.8" opacity=".6"/><path d="M119,110 C269,110 357,98 507,98" fill="none" stroke="#dfa818" stroke-width="1.8" opacity=".6"/><path d="M119,170 C269,170 357,148 507,148" fill="none" stroke="#dfa818" stroke-width="1.8" opacity=".6"/><path d="M525,48 C675,48 777,74 927,74" fill="none" stroke="#dfa818" stroke-width="1.8" opacity=".6"/><path d="M525,98 C675,98 777,136 927,136" fill="none" stroke="#dfa818" stroke-width="1.8" opacity=".6"/><path d="M525,148 C675,148 777,202 927,202" fill="none" stroke="#dfa818" stroke-width="1.8" opacity=".6"/><circle cx="110" cy="50" r="5.5" fill="#dfa818"/><circle cx="110" cy="50" r="10" fill="none" stroke="#dfa818" stroke-width="1.2" opacity=".32"/><text class="gnode" x="94" y="53.5" text-anchor="end">Postgres</text><circle cx="110" cy="110" r="5.5" fill="#dfa818"/><circle cx="110" cy="110" r="10" fill="none" stroke="#dfa818" stroke-width="1.2" opacity=".32"/><text class="gnode" x="94" y="113.5" text-anchor="end">MongoDB</text><circle cx="110" cy="170" r="5.5" fill="#dfa818"/><circle cx="110" cy="170" r="10" fill="none" stroke="#dfa818" stroke-width="1.2" opacity=".32"/><text class="gnode" x="94" y="173.5" text-anchor="end">MS SQL</text><circle cx="110" cy="224" r="4" fill="#dde3ea"/><text class="gnode dim" x="94" y="227.5" text-anchor="end">Google Sheets</text><circle cx="516" cy="48" r="5.5" fill="#dfa818"/><circle cx="516" cy="48" r="10" fill="none" stroke="#dfa818" stroke-width="1.2" opacity=".32"/><text class="gnode" x="516" y="36.0" text-anchor="middle">orders</text><circle cx="516" cy="98" r="5.5" fill="#dfa818"/><circle cx="516" cy="98" r="10" fill="none" stroke="#dfa818" stroke-width="1.2" opacity=".32"/><text class="gnode" x="516" y="86.0" text-anchor="middle">sla_events</text><circle cx="516" cy="148" r="5.5" fill="#dfa818"/><circle cx="516" cy="148" r="10" fill="none" stroke="#dfa818" stroke-width="1.2" opacity=".32"/><text class="gnode" x="516" y="136.0" text-anchor="middle">distributors</text><circle cx="516" cy="196" r="4" fill="#dde3ea"/><text class="gnode dim" x="516" y="184.0" text-anchor="middle">invoices</text><circle cx="516" cy="236" r="4" fill="#dde3ea"/><text class="gnode dim" x="516" y="224.0" text-anchor="middle">targets</text><circle cx="936" cy="74" r="5.5" fill="#dfa818"/><circle cx="936" cy="74" r="10" fill="none" stroke="#dfa818" stroke-width="1.2" opacity=".32"/><text class="gnode" x="952" y="77.5" text-anchor="start">Order</text><circle cx="936" cy="136" r="5.5" fill="#dfa818"/><circle cx="936" cy="136" r="10" fill="none" stroke="#dfa818" stroke-width="1.2" opacity=".32"/><text class="gnode" x="952" y="139.5" text-anchor="start">Service level</text><circle cx="936" cy="202" r="5.5" fill="#dfa818"/><circle cx="936" cy="202" r="10" fill="none" stroke="#dfa818" stroke-width="1.2" opacity=".32"/><text class="gnode" x="952" y="205.5" text-anchor="start">Distributor</text></svg>
+          </div>
+
+          <div class="card" style="height:276px">
+            <div class="card-head">
+              <svg class="grip" width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="9" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="9" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="9" cy="10" r="1.2"/></svg>
+              <span class="card-title">Where this one landed</span>
+            </div>
+            <div class="card-note">The rung decides what ships with the answer</div>
+            <div class="rungs">
+              <div class="rung hit"><span class="dot9"></span>Answered outright<span class="n">1,735</span></div>
+              <div class="rung"><span class="dot9"></span>Answered, check suggested<span class="n">71</span></div>
+              <div class="rung"><span class="dot9"></span>Answer carries its reference<span class="n">24</span></div>
+              <div class="rung"><span class="dot9"></span>Answer carries a warning<span class="n">9</span></div>
+              <div class="rung"><span class="dot9"></span>Held for human review<span class="n">3</span></div>
+            </div>
+            <div class="rung-foot">
+              Below the last rung the model stops answering and the question goes to a review manager. <b>0.2%</b> reached one this month, down from 1.8%.
             </div>
           </div>
         </div>
