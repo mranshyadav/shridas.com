@@ -942,210 +942,431 @@
 
 
 /* ============================================================================
-   Screen deck — the case-study gallery
+   The reel — the case-study gallery
 
-   Screens fanned into depth with the middle one face-on. Each slide gets one
-   transform, written inline by the component from its distance to the active
-   index; everything here is the stage those transforms happen on.
+   A pinned room you scroll through. The section holds the viewport for as long
+   as there are screens left, the cards fan into depth behind the one you are
+   looking at, and the page carries on once the last one has passed.
 
-   The perspective sits on the stage, not the slides, so all of them share a
-   vanishing point. Per-slide perspective gives each its own, and the row stops
-   reading as depth and starts reading as a set of separately skewed boxes.
+   Position is written by ScreenDeck.tsx, one transform per card per frame,
+   derived from the scroll position. Everything here is the room those
+   transforms happen in: the wash, the depth, the numeral behind them, and the
+   readouts that say where you are.
 
-   Without `data-enhanced` — prerendered, or if the bundle never lands — none
-   of the fanning applies and the gallery is a plain grid of screens with their
-   captions underneath.
+   Without `data-reel` — prerendered, if the bundle never lands, or if the
+   visitor asked for reduced motion — none of it applies and the gallery is a
+   plain grid of screens with their captions underneath.
    ========================================================================== */
 
-.deck__stage {
+/* -- the plain grid ------------------------------------------------------ */
+
+/* The gallery is rendered full-width rather than inside the essay's container
+   — the pinned reel needs the whole viewport. The fallback grid puts the
+   measure back so it lines up with the chapters above it. */
+.reel__scene {
   display: grid;
-  gap: 3rem 2rem;
+  gap: 3.5rem 2rem;
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
 @media (min-width: 768px) {
-  .deck__stage {
+  .reel__scene {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-.deck__frame {
+.reel__frame {
   display: block;
+  position: relative;
   width: 100%;
   text-align: left;
-  position: relative;
 }
 
-.deck__caption,
-.deck__now {
+.reel__caption-inline {
   display: flex;
   gap: 1rem;
   margin-top: 1.25rem;
   font-size: var(--fs-sm);
   color: var(--ink-tertiary);
 }
+.reel__caption-inline .num {
+  flex-shrink: 0;
+}
 
-.deck__arrow,
-.deck__foot {
+/* Fanned, the caption sits under the stage instead — one per card would be a
+   second copy of the same sentence, printed on a card you cannot read. */
+.reel[data-reel] .reel__caption-inline {
   display: none;
 }
 
-/* -- enhanced: the fan --------------------------------------------------- */
-
-.deck[data-enhanced] {
-  /* The outer slides are meant to run past the text column and off the page.
-     Clipping here rather than on the stage keeps them from widening the
-     document, without flattening the 3-D context they live in. */
-  margin-inline: calc(var(--gutter) * -1);
-  padding-inline: var(--gutter);
-  overflow-x: clip;
+/* Everything that only exists once the reel is running. */
+.reel__room,
+.reel__edge,
+.reel__ghost,
+.reel__bar,
+.reel__arrow,
+.reel__hud,
+.reel__cursor {
+  display: none;
 }
 
-.deck[data-enhanced] .deck__stage {
-  /* Width of one card, as a share of the stage. Everything else — how far the
-     stage has to be to fit a card, how far a card travels — is derived from
-     this, so the composition holds its proportions at every size. */
-  --deck-card: 78%;
+/* -- the room ------------------------------------------------------------ */
 
-  display: block;
+.reel[data-reel] {
+  --reel-bg: color-mix(in srgb, var(--ink) 3.5%, var(--paper));
+}
+
+.reel[data-reel] .reel__track {
   position: relative;
-  aspect-ratio: 16 / 13;
+}
+
+.reel[data-reel] .reel__scene {
+  max-width: none;
+  padding-inline: 0;
+}
+
+.reel[data-reel] .reel__pin {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100svh;
+  padding: clamp(4.5rem, 11vh, 7rem) var(--gutter) clamp(1.5rem, 4vh, 2.5rem);
+  overflow: hidden;
+}
+
+.reel[data-reel] .reel__room {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(
+      120% 78% at 50% 44%,
+      color-mix(in srgb, var(--ink) 5%, transparent) 0%,
+      transparent 68%
+    ),
+    var(--reel-bg);
+  /* Softened top and bottom so the band arrives and leaves rather than
+     switching on at a hard edge as the section scrolls past. */
+  mask-image: linear-gradient(to bottom, transparent 0, #000 9%, #000 91%, transparent 100%);
+}
+
+/* The paper-coloured fade at the left and right, drawn over the cards. A hard
+   clip cuts the outer screens off mid-card, which reads as a mistake rather
+   than as a set continuing past the edge. */
+.reel[data-reel] .reel__edge {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    var(--reel-bg) 0,
+    transparent 13%,
+    transparent 87%,
+    var(--reel-bg) 100%
+  );
+}
+
+/* The screen number, set enormous and left almost invisible behind the cards.
+   It says which frame you are on without anyone having to read a word. */
+.reel[data-reel] .reel__ghost {
+  display: block;
+  position: absolute;
+  left: -0.06em;
+  bottom: -0.16em;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  /* Bounded by the height as well as the width: on a short viewport a numeral
+     sized only by the width is a grey shape running off two edges. */
+  font-size: min(30vw, 26rem, 34vh);
+  line-height: 0.78;
+  letter-spacing: -0.06em;
+  color: color-mix(in srgb, var(--ink) 5%, transparent);
+  user-select: none;
+  animation: reel-ghost 720ms var(--ease-out) both;
+}
+@keyframes reel-ghost {
+  from {
+    opacity: 0;
+    filter: blur(18px);
+    transform: scale(1.05);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}
+
+/* -- the readouts -------------------------------------------------------- */
+
+.reel[data-reel] .reel__bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  position: relative;
+  z-index: 50;
+  padding-bottom: 1rem;
+}
+
+.reel__counter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+.reel__counter-now {
+  font-size: var(--fs-sm);
+  color: var(--signal);
+}
+
+/* -- the stage ----------------------------------------------------------- */
+
+/* The perspective and the cards live on one element, and the cards are its
+   direct children — the scene wrapper stops generating a box entirely.
+ 
+   Deliberately no `transform-style: preserve-3d` here. Perspective alone is
+   what projects the children; preserve-3d on top of it renders identically and
+   breaks hit testing outright — Chrome answers every click over the fan with
+   the stage behind it, so no screen can be opened, dragged or hovered. It cost
+   an afternoon to find, so: the stage is a window, not a room. */
+.reel[data-reel] .reel__stage {
+  position: relative;
+  z-index: 10;
   perspective: 2000px;
-  perspective-origin: 50% 45%;
-  transform-style: preserve-3d;
+  perspective-origin: 50% 46%;
   cursor: grab;
   touch-action: pan-y;
 }
-@media (min-width: 768px) {
-  .deck[data-enhanced] .deck__stage {
-    --deck-card: 52%;
-    aspect-ratio: 16 / 7;
-  }
-}
-@media (min-width: 1180px) {
-  .deck[data-enhanced] .deck__stage {
-    --deck-card: 46%;
-    aspect-ratio: 16 / 6.2;
-  }
-}
-.deck[data-enhanced][data-dragging] .deck__stage {
+.reel[data-reel][data-dragging] .reel__stage {
   cursor: grabbing;
 }
-.deck[data-enhanced] .deck__stage:focus-visible {
+.reel[data-reel] .reel__stage:focus-visible {
   outline: var(--rule-width) solid var(--signal);
-  outline-offset: 1.5rem;
+  outline-offset: 0.75rem;
+}
+/* Only once the label that replaces it is wired up and positioned — see the
+   `data-cursor` effect in ScreenDeck.tsx. */
+.reel[data-reel][data-cursor] .reel__stage,
+.reel[data-reel][data-cursor] .reel__frame {
+  cursor: none;
 }
 
-/* One card, centred. The transforms then fan the whole set out from here. */
-.deck[data-enhanced] .deck__slide {
+.reel[data-reel] .reel__scene {
+  display: contents;
+}
+
+/* One card, centred. The transforms fan the whole set out from here. */
+.reel[data-reel] .reel__slide {
+  --reel-card: 80%;
   position: absolute;
-  top: 50%;
   left: 50%;
-  width: var(--deck-card);
+  top: 50%;
+  width: var(--reel-card);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0;
   translate: -50% -50%;
   transform-origin: 50% 50%;
+  /* No `will-change`. Every card already carries a 3-D transform, which
+     promotes it anyway, and declaring it as well cost us the thing it was
+     meant to buy: Chrome deprioritised rasterising the promoted layers and
+     the outer cards painted as empty frames. */
+}
+@media (min-width: 768px) {
+  .reel[data-reel] .reel__slide {
+    --reel-card: 54%;
+  }
+}
+@media (min-width: 1180px) {
+  .reel[data-reel] .reel__slide {
+    --reel-card: 50%;
+  }
 }
 
-/* `will-change` only while a drag is actually in flight. Left on permanently it
-   promotes every slide to its own compositing layer for the life of the page,
-   and Chrome then deprioritises rasterising them — the side cards paint as
-   empty frames while the middle one, which has no transform to promote, comes
-   out fine. */
-.deck[data-dragging] .deck__slide {
-  will-change: transform;
+.reel__lift {
+  width: 100%;
 }
-/* Only after the first frame — see `ready` in ScreenDeck.tsx. And never
-   mid-drag, where the slides should track the pointer rather than ease
-   toward it. */
-.deck[data-ready]:not([data-dragging]) .deck__slide {
-  transition:
-    transform var(--dur-slow) var(--ease-out),
-    opacity var(--dur-slow) var(--ease-out);
+/* Hidden only once something is watching that can bring it back — see the
+   `armed` flag in ScreenDeck.tsx. */
+.reel[data-reel][data-armed]:not([data-inview]) .reel__lift {
+  opacity: 0;
+}
+.reel[data-reel][data-inview] .reel__lift {
+  animation: reel-lift 780ms var(--ease-out) both;
+}
+@keyframes reel-lift {
+  from {
+    opacity: 0;
+    transform: translateY(34px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* An explicit width, not `auto`. Sizing the button to its content while the
    device inside is sized as a percentage of the button is circular, and it
-   resolves differently per slide — one of them collapsed to 52px. The stage's
-   aspect ratio is what reserves the height instead. */
-.deck[data-enhanced] .deck__frame {
+   resolves differently per card — one of them collapsed to 52px. */
+.reel[data-reel] .reel__frame {
   width: 100%;
   cursor: pointer;
 }
-.deck[data-enhanced] .deck__slide[data-active] .deck__frame {
+.reel[data-reel] .reel__slide[data-active] .reel__frame {
   cursor: zoom-in;
 }
-.deck[data-enhanced] .deck__frame .device {
+
+/* Portrait devices are held to roughly the height of a browser frame, so the
+   fan keeps one silhouette instead of changing shape per platform — and so a
+   phone is not a sliver marooned in the middle of an otherwise empty card.
+   Their widths are tuned to land at the same height as a 16:10 browser in the
+   same slot, with max-height as the backstop on a short viewport. */
+.reel[data-reel] .reel__slide .device {
+  max-height: 100%;
+  overflow: hidden;
   transition: box-shadow var(--dur-slow) var(--ease-out);
+  /* A portrait device is narrower than the card it sits in, and the card is
+     what the fan positions. Without this the phone hangs off the left edge of
+     its own slot and the whole composition sits askew. */
+  margin-inline: auto;
 }
-.deck[data-enhanced] .deck__slide[data-active] .device {
-  box-shadow: var(--shadow-lg);
-}
-
-.deck[data-enhanced] .deck__stage::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 90%;
-  height: 88%;
-  translate: -50% -50%;
-  /* A gradient is already soft — a blur filter on top of it only buys another
-     composited layer, and this stage has enough of those. */
-  background: radial-gradient(
-    ellipse at center,
-    color-mix(in srgb, var(--ink) 7%, transparent) 0%,
-    transparent 70%
-  );
-  pointer-events: none;
-}
-
-/* Portrait devices are constrained to roughly the height of a browser frame,
-   so the fan keeps one silhouette instead of changing shape per platform. */
-.deck[data-enhanced] .deck__slide .device--browser {
+.reel[data-reel] .reel__slide .device--browser {
   width: 100%;
 }
-.deck[data-enhanced] .deck__slide .device--tablet {
-  width: 58%;
+.reel[data-reel] .reel__slide .device--tablet {
+  width: 60%;
 }
-.deck[data-enhanced] .deck__slide .device--phone {
+.reel[data-reel] .reel__slide .device--phone {
   width: 36%;
 }
 
-.deck__expand {
+.reel[data-reel] .reel__slide[data-active] .device {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Paper over glass. Fading a near-white screenshot only makes it paler; laying
+   the page's own colour over it is what actually sends it backwards. `--dim`
+   is written on the card every frame from its distance to the middle. */
+.reel[data-reel] .reel__frame .device::after {
+  content: '';
   position: absolute;
-  right: 0.875rem;
-  bottom: 0.875rem;
-  padding: 0.35rem 0.7rem;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  background: var(--reel-bg);
+  opacity: var(--dim, 0);
+  pointer-events: none;
+}
+
+/* One pass of light as a card lands in the middle. The single flourish here
+   that is only a flourish. */
+.reel[data-reel] .reel__slide[data-active] .device::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 38%,
+    color-mix(in srgb, #fff 45%, transparent) 50%,
+    transparent 62%
+  );
+  animation: reel-sheen 1100ms var(--ease-out) 160ms both;
+}
+@keyframes reel-sheen {
+  from {
+    opacity: 0;
+    transform: translateX(-65%);
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(65%);
+  }
+}
+
+/* -- the pointer --------------------------------------------------------- */
+
+.reel[data-reel][data-cursor] .reel__cursor {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 60;
+  margin: -1.4rem 0 0 -1.4rem;
+  width: 2.8rem;
+  height: 2.8rem;
   border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
   font-family: var(--font-mono);
   font-size: var(--fs-mono);
   letter-spacing: var(--tr-mono);
   text-transform: uppercase;
-  color: var(--paper);
-  background: color-mix(in srgb, var(--ink) 82%, transparent);
+  pointer-events: none;
   opacity: 0;
-  transform: translateY(4px);
+  scale: 0.4;
   transition:
     opacity var(--dur) var(--ease-out),
-    transform var(--dur) var(--ease-out);
-  pointer-events: none;
+    scale var(--dur) var(--ease-out),
+    width var(--dur) var(--ease-out),
+    height var(--dur) var(--ease-out);
 }
-.deck[data-enhanced] .deck__slide[data-active] .deck__frame:hover .deck__expand,
-.deck[data-enhanced] .deck__slide[data-active] .deck__frame:focus-visible .deck__expand {
+.reel[data-reel][data-cursor] .reel__cursor[data-mode='idle'] {
   opacity: 1;
-  transform: none;
+  scale: 1;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin: -0.375rem 0 0 -0.375rem;
+}
+.reel[data-reel][data-cursor] .reel__cursor[data-mode='open'],
+.reel[data-reel][data-cursor] .reel__cursor[data-mode='drag'] {
+  opacity: 1;
+  scale: 1;
+  width: 4.25rem;
+  height: 4.25rem;
+  margin: -2.125rem 0 0 -2.125rem;
 }
 
-/* -- arrows, dots, caption ----------------------------------------------- */
+.reel__cursor-word,
+.reel__cursor-dot {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.reel__cursor[data-mode='open'] [data-when='open'],
+.reel__cursor[data-mode='drag'] [data-when='drag'],
+.reel__cursor[data-mode='idle'] [data-when='idle'] {
+  opacity: 1;
+}
+.reel__cursor-dot {
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: currentColor;
+}
 
-.deck[data-enhanced] .deck__arrow {
+/* -- arrows -------------------------------------------------------------- */
+
+.reel[data-reel] .reel__arrow {
   display: grid;
   place-items: center;
   position: absolute;
   top: 50%;
-  z-index: 60;
+  z-index: 50;
   width: 2.75rem;
   height: 2.75rem;
   border: var(--rule-width) solid var(--rule);
@@ -1157,68 +1378,180 @@
   transition:
     border-color var(--dur) var(--ease-out),
     color var(--dur) var(--ease-out),
-    opacity var(--dur) var(--ease-out);
+    opacity var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out);
 }
-.deck[data-enhanced] .deck__arrow:hover:not(:disabled) {
+.reel[data-reel] .reel__arrow:hover:not(:disabled) {
   border-color: var(--ink);
   color: var(--ink);
 }
-.deck[data-enhanced] .deck__arrow:disabled {
-  opacity: 0.25;
+.reel[data-reel] .reel__arrow--prev:hover:not(:disabled) {
+  transform: translateY(-50%) translateX(-3px);
 }
-.deck__arrow--prev {
+.reel[data-reel] .reel__arrow--next:hover:not(:disabled) {
+  transform: translateY(-50%) translateX(3px);
+}
+.reel[data-reel] .reel__arrow:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+.reel__arrow--prev {
   left: var(--gutter);
 }
-.deck__arrow--next {
+.reel__arrow--next {
   right: var(--gutter);
 }
 
-.deck[data-enhanced] .deck__foot {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
-  margin-top: 2.5rem;
+/* -- the caption and the rail -------------------------------------------- */
+
+.reel[data-reel] .reel__hud {
+  display: grid;
+  gap: 1.5rem;
+  justify-items: center;
+  position: relative;
+  z-index: 50;
+  padding-top: 1.25rem;
 }
 
-.deck__dots {
-  display: flex;
-  align-items: center;
+.reel__caption {
+  display: grid;
   gap: 0.5rem;
-}
-.deck__dot {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 999px;
-  background: var(--rule-strong);
-  transition:
-    width var(--dur) var(--ease-out),
-    background-color var(--dur) var(--ease-out);
-}
-.deck__dot[data-active] {
-  width: 1.75rem;
-  background: var(--signal);
-}
-
-.deck[data-enhanced] .deck__now {
-  justify-content: center;
-  margin: 0;
-  max-width: 56ch;
+  justify-items: center;
+  max-width: min(64ch, 100%);
   text-align: center;
 }
-.deck__index {
-  flex-shrink: 0;
+
+/* Each line rises out of its own mask when the screen changes. Masking the
+   line rather than fading the paragraph is what makes it read as typeset
+   motion instead of a cross-fade. */
+.reel__caption-mask {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.1em;
+  margin-block: -0.1em;
+}
+.reel__caption-line {
+  display: block;
+  animation: reel-line 620ms var(--ease-out) both;
+}
+.reel__caption-mask:last-child .reel__caption-line {
+  animation-delay: 70ms;
+  color: var(--ink);
+  line-height: var(--lh-relaxed);
+}
+@keyframes reel-line {
+  from {
+    opacity: 0;
+    transform: translateY(105%);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.reel__platform {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tr-mono);
+  text-transform: uppercase;
   color: var(--ink-tertiary);
 }
 
+.reel__rail {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+  position: relative;
+  padding-block: 0.75rem;
+}
+/* The hairline the ticks sit on, and the part of it you have covered. */
+.reel__rail-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: var(--rule-width);
+  background: var(--rule);
+}
+.reel__rail-fill {
+  display: block;
+  height: 100%;
+  background: var(--signal);
+  transform: scaleX(var(--reel-progress, 0));
+  transform-origin: left;
+}
+
+.reel__tick {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  background: var(--reel-bg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: 0;
+  color: var(--ink-tertiary);
+  cursor: pointer;
+  transition:
+    color var(--dur) var(--ease-out),
+    scale var(--dur) var(--ease-out);
+}
+.reel__tick::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: var(--rule-width) solid transparent;
+  transition: border-color var(--dur) var(--ease-out);
+}
+.reel__tick:hover {
+  color: var(--ink);
+}
+.reel__tick[data-seen] {
+  color: var(--ink-secondary);
+}
+.reel__tick[data-active] {
+  color: var(--signal);
+  scale: 1.15;
+}
+.reel__tick[data-active]::before {
+  border-color: var(--signal-rule);
+}
+
+.reel__hint {
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out);
+}
+.reel[data-reel] .reel__hint[data-shown] {
+  opacity: 1;
+  transform: none;
+}
+
+/* -- narrow -------------------------------------------------------------- */
+
 @media (max-width: 767px) {
-  .deck[data-enhanced] .deck__stage {
-    aspect-ratio: 16 / 13;
-  }
-  .deck[data-enhanced] .deck__arrow {
+  .reel[data-reel] .reel__arrow {
     display: none;
   }
+  .reel[data-reel] .reel__ghost {
+    font-size: min(46vw, 26vh);
+  }
+  .reel__rail {
+    gap: 0.5rem;
+  }
+  .reel__tick {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 }
+
 
 /* -- overlay ------------------------------------------------------------- */
 
@@ -1280,6 +1613,50 @@
 .lightbox__caption {
   color: var(--ink-secondary);
   line-height: var(--lh-relaxed);
+}
+
+/* A contact sheet along the bottom of the overlay, so the whole set stays
+   reachable without stepping through it one screen at a time. */
+.lightbox__strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+.lightbox__thumb {
+  display: grid;
+  place-items: center;
+  width: 3.75rem;
+  height: 2.5rem;
+  overflow: hidden;
+  border: var(--rule-width) solid var(--rule);
+  border-radius: 3px;
+  background: var(--paper-sunken);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  color: var(--ink-tertiary);
+  cursor: pointer;
+  opacity: 0.55;
+  transition:
+    opacity var(--dur) var(--ease-out),
+    border-color var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out);
+}
+.lightbox__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+.lightbox__thumb:hover {
+  opacity: 0.85;
+  transform: translateY(-2px);
+}
+.lightbox__thumb[data-active] {
+  opacity: 1;
+  border-color: var(--signal);
 }
 
 .lightbox__close {

@@ -51,6 +51,8 @@ export interface Project {
   ongoing?: boolean;
   /** When ongoing work started, for the case-study timeline. */
   started?: string;
+  /** When finished work ended. With `started`, this gives a real timeline. */
+  ended?: string;
   /** A public URL, if the work shipped somewhere a visitor can look at it. */
   liveUrl?: string;
   outcome: string;
@@ -86,7 +88,9 @@ export const projects: Project[] = [
     liveUrl: 'https://qwry.ai',
     outcome:
       'A question asked in plain English, answered across databases that were never built to be read together — with the SQL behind the answer shown, so the answer can be checked rather than trusted.',
-    year: YEAR,
+    year: '2025 — 2026',
+    started: 'May 2025',
+    ended: 'Feb 2026',
     context:
       'An enterprise data platform built on a premise that shapes every screen in it: unify the data without moving it. Organisations connect the systems they already run — SQL and NoSQL databases, spreadsheets, files, SaaS tools — and the platform infers the relationships between them, builds a governed warehouse across the lot, and answers questions asked in plain English. Nothing is replicated; the data stays on the customer’s own infrastructure. It runs its own LLM, every answer carries the SQL that produced it, and role-based access control spans departments and groups inside one organisation.',
     responsibility:
@@ -635,17 +639,22 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
         'Structured how organisations model departments and groups under role-based access',
         'Designed the analytics builder: how a dataset becomes a chart, and who chooses',
         'Designed how the LLM behaves for enterprise use — the dataset-scoped prompt path, and the confidence ladder that decides whether an answer ships plainly, with a reference, with a warning, or to a human reviewer first',
+        'Tested the flows, drove the improvements that came out of testing, and put the suggestions behind them to the founder',
       ],
-      whatIDidNot: ['Did not write the production code', '[Anything else outside your scope]'],
+      whatIDidNot: ['Did not write the production code — the design was mine end to end, the build was not'],
     },
     context: {
       teamSize: 'Me and the founder, working closely',
       techLimitations: [
-        'Had to accommodate data arriving through more than 300 different import methods',
+        'Data arrived through scores of unlike import paths — the platform lists more than 120 connectors — and no two of them presented the same shape',
         'Token cost set the shape of the AI. At this data volume a model allowed to search the whole estate made a single small question expensive, so the design had to narrow what it could see before it answered',
         'Every workspace had to stay governable — model and version, query access level, execution limits, export format and size, and logging all had to be an administrator’s choice rather than a default',
       ],
-      businessGoals: ['[Goal one]', '[Goal two]'],
+      /* Empty on purpose. The founder's commercial goals were his, and stating
+         them second-hand would be guesswork on the one page where guesswork is
+         least affordable. The section hides itself rather than showing a
+         heading over nothing. */
+      businessGoals: [],
     },
     designDecisions: [
       {
@@ -688,13 +697,22 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
          The work shipped and the product has grown past it — that is the
          honest signal, and it is a good one. Anything the design itself
          moved belongs in metrics, and only Ansh has those. */
-      metrics: ['[A change you measured, with the before and after]'],
+      metrics: [],
       outcomes: [
         'The work shipped, and the product it became sells publicly at qwry.ai across power and distribution, manufacturing, supply chain, e-commerce and procurement',
         'The connect-and-unify flow I designed now carries forty-plus source integrations, from Postgres and MongoDB through spreadsheets, files and SaaS tools',
         'The spine of the product is still the path this design was built around — raw source to a verified answer you can check, with the SQL always in reach',
       ],
-      learnings: ['[What you would tell someone starting the same project]'],
+      learnings: [],
+    },
+    reflection: {
+      /* Empty on purpose — see businessGoals above. */
+      improvements: [],
+      learnings: [
+        'To research narrowly and precisely rather than broadly. The two findings that redirected this product were specific questions asked properly, not a survey of the field',
+        'That designing a product in depth is a different craft from designing screens. What mattered here sat underneath the interface — what the system does when it is unsure, and who it turns to',
+        'To go at the critical problem rather than around it. The file-explorer version was the comfortable design; the scale and access problem was the real one, and it had to be met head on',
+      ],
     },
   },
   'fleet-management': {
@@ -872,6 +890,25 @@ function extraShots(project: Project): CaseStudyScreen[] {
   }));
 }
 
+/**
+ * Ongoing work reads from its start; finished work reads start to end, with
+ * the run length worked out rather than typed, so it cannot drift from the
+ * dates beside it. Only a project with neither falls back to a placeholder.
+ */
+function caseStudyTimeline(project: Project): string {
+  if (project.ongoing) return `${project.started ?? '[Start]'} — ongoing`;
+  if (!project.started || !project.ended) return '[Start — end, and how long it ran]';
+
+  const span = `${project.started} — ${project.ended}`;
+  const from = new Date(`${project.started} 1`);
+  const to = new Date(`${project.ended} 1`);
+  if (Number.isNaN(from.valueOf()) || Number.isNaN(to.valueOf())) return span;
+
+  const months =
+    (to.getFullYear() - from.getFullYear()) * 12 + (to.getMonth() - from.getMonth()) + 1;
+  return months > 0 ? `${span} · ${months} months` : span;
+}
+
 export function getCaseStudy(id: string | undefined): CaseStudy | undefined {
   const project = getProject(id);
   if (!project) return undefined;
@@ -883,7 +920,7 @@ export function getCaseStudy(id: string | undefined): CaseStudy | undefined {
     projectName: project.title,
     productType: project.domain,
     role: project.role,
-    timeline: project.ongoing ? `${project.started ?? 'Apr 2026'} — ongoing` : '[Start — end, and how long it ran]',
+    timeline: caseStudyTimeline(project),
     screens: [...galleryFor(project), ...extraShots(project)],
   };
 }

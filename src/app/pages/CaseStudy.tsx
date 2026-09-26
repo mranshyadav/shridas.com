@@ -82,6 +82,23 @@ function RuledList({ items }: { items: string[] }) {
   );
 }
 
+/**
+ * A labelled list that disappears rather than leaving its heading stranded
+ * over nothing. Not every project has a measured number or a regret, and an
+ * empty "Measured" reads worse than no "Measured" at all.
+ */
+function ListBlock({ label, items }: { label: string; items: string[] }) {
+  if (items.length === 0) return null;
+  return (
+    <div>
+      <p className="eyebrow">{label}</p>
+      <div className="mt-3">
+        <RuledList items={items} />
+      </div>
+    </div>
+  );
+}
+
 export function CaseStudy() {
   const { id } = useParams<{ id: string }>();
   const project = getProject(id);
@@ -189,52 +206,22 @@ export function CaseStudy() {
 
         <Chapter n="02" title="Constraints">
           <div className="grid gap-10 sm:grid-cols-2">
-            <div>
-              <p className="eyebrow">What limited us</p>
-              <div className="mt-3">
-                <RuledList items={study.context.techLimitations} />
-              </div>
-            </div>
-            <div>
-              <p className="eyebrow">What we were aiming at</p>
-              <div className="mt-3">
-                <RuledList items={study.context.businessGoals} />
-              </div>
-            </div>
+            <ListBlock label="What limited us" items={study.context.techLimitations} />
+            <ListBlock label="What we were aiming at" items={study.context.businessGoals} />
           </div>
         </Chapter>
 
         <Chapter n="03" title="My scope">
           <div className="grid gap-10 sm:grid-cols-2">
-            <div>
-              <p className="eyebrow">What I owned</p>
-              <div className="mt-3">
-                <RuledList items={study.ownership.whatIDid} />
-              </div>
-            </div>
-            <div>
-              <p className="eyebrow">What I didn’t</p>
-              <div className="mt-3">
-                <RuledList items={study.ownership.whatIDidNot} />
-              </div>
-            </div>
+            <ListBlock label="What I owned" items={study.ownership.whatIDid} />
+            <ListBlock label="What I didn’t" items={study.ownership.whatIDidNot} />
           </div>
         </Chapter>
 
         <Chapter n="04" title="Research">
           <div className="grid gap-10 sm:grid-cols-2">
-            <div>
-              <p className="eyebrow">What we found</p>
-              <div className="mt-3">
-                <RuledList items={study.research.keyFindings} />
-              </div>
-            </div>
-            <div>
-              <p className="eyebrow">Where it hurt</p>
-              <div className="mt-3">
-                <RuledList items={study.research.painPoints} />
-              </div>
-            </div>
+            <ListBlock label="What we found" items={study.research.keyFindings} />
+            <ListBlock label="Where it hurt" items={study.research.painPoints} />
           </div>
         </Chapter>
 
@@ -266,10 +253,19 @@ export function CaseStudy() {
         </Chapter>
       </div>
 
-      {/* --------------------------------------------------------- gallery -- */}
-      <section className="container-page section-y" style={{ paddingBottom: 0 }}>
-        <div className="rule-t pt-8">
-          <p className="eyebrow">06 — The work</p>
+      {/* --------------------------------------------------------- gallery --
+
+          Full width, not inside the essay's container: the reel pins to the
+          viewport and needs all of it. Its own fallback grid puts the measure
+          back if the reel never runs. */}
+      <section id="work-gallery" className="section-y" style={{ paddingBottom: 0 }}>
+        <div className="container-page">
+          <div className="rule-t flex flex-wrap items-baseline justify-between gap-4 pt-8">
+            <p className="eyebrow">06 — The work</p>
+            <p className="eyebrow">
+              {String(study.screens.length).padStart(2, '0')} screens
+            </p>
+          </div>
         </div>
 
         <div className="mt-10">
@@ -285,35 +281,15 @@ export function CaseStudy() {
       <div className="container-page mt-24 md:mt-32">
         <Chapter n="07" title="What happened">
           <div className="flex flex-col gap-10">
-            <div>
-              <p className="eyebrow">Measured</p>
-              <div className="mt-3">
-                <RuledList items={study.impact.metrics} />
-              </div>
-            </div>
-            <div>
-              <p className="eyebrow">Knock-on effects</p>
-              <div className="mt-3">
-                <RuledList items={study.impact.outcomes} />
-              </div>
-            </div>
+            <ListBlock label="Measured" items={study.impact.metrics} />
+            <ListBlock label="Knock-on effects" items={study.impact.outcomes} />
           </div>
         </Chapter>
 
         <Chapter n="08" title="In hindsight">
           <div className="grid gap-10 sm:grid-cols-2">
-            <div>
-              <p className="eyebrow">I’d do differently</p>
-              <div className="mt-3">
-                <RuledList items={study.reflection.improvements} />
-              </div>
-            </div>
-            <div>
-              <p className="eyebrow">What it taught me</p>
-              <div className="mt-3">
-                <RuledList items={study.reflection.learnings} />
-              </div>
-            </div>
+            <ListBlock label="I’d do differently" items={study.reflection.improvements} />
+            <ListBlock label="What it taught me" items={study.reflection.learnings} />
           </div>
         </Chapter>
       </div>

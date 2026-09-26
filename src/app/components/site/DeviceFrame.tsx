@@ -19,6 +19,8 @@ interface ScreenProps {
   expects: string;
   /** Placeholders get simpler at small sizes — the label would be unreadable. */
   compact?: boolean;
+  /** Skip lazy-loading. For the one frame that is on screen from the start. */
+  eager?: boolean;
 }
 
 /** Wireframe shown in place of a missing screenshot. */
@@ -36,13 +38,13 @@ function ScreenPlaceholder({ expects, compact }: { expects: string; compact?: bo
   );
 }
 
-function Screen({ src, alt, expects, compact }: ScreenProps) {
+function Screen({ src, alt, expects, compact, eager }: ScreenProps) {
   if (!src) return <ScreenPlaceholder expects={expects} compact={compact} />;
-  return <img src={src} alt={alt} loading="lazy" decoding="async" />;
+  return <img src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />;
 }
 
 /** Browser window: title bar, traffic lights, address pill, 16:10 viewport. */
-export function BrowserFrame({ src, alt, expects, compact }: ScreenProps) {
+export function BrowserFrame({ src, alt, expects, compact, eager }: ScreenProps) {
   return (
     <div className="device device--browser">
       <div className="device__chrome" aria-hidden="true">
@@ -52,30 +54,30 @@ export function BrowserFrame({ src, alt, expects, compact }: ScreenProps) {
         <span className="device__omnibox" />
       </div>
       <div className="device__viewport" style={{ aspectRatio: '16 / 10' }}>
-        <Screen src={src} alt={alt} expects={expects} compact={compact} />
+        <Screen src={src} alt={alt} expects={expects} compact={compact} eager={eager} />
       </div>
     </div>
   );
 }
 
 /** Tablet, portrait. Thin uniform bezel, softly rounded. */
-export function TabletFrame({ src, alt, expects, compact }: ScreenProps) {
+export function TabletFrame({ src, alt, expects, compact, eager }: ScreenProps) {
   return (
     <div className="device device--tablet">
       <div className="device__viewport" style={{ aspectRatio: '3 / 4' }}>
-        <Screen src={src} alt={alt} expects={expects} compact={compact} />
+        <Screen src={src} alt={alt} expects={expects} compact={compact} eager={eager} />
       </div>
     </div>
   );
 }
 
 /** Phone, portrait, with a speaker pill. */
-export function PhoneFrame({ src, alt, expects, compact }: ScreenProps) {
+export function PhoneFrame({ src, alt, expects, compact, eager }: ScreenProps) {
   return (
     <div className="device device--phone">
       <span className="device__notch" aria-hidden="true" />
       <div className="device__viewport" style={{ aspectRatio: '9 / 19' }}>
-        <Screen src={src} alt={alt} expects={expects} compact={compact} />
+        <Screen src={src} alt={alt} expects={expects} compact={compact} eager={eager} />
       </div>
     </div>
   );
