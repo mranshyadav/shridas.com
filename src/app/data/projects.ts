@@ -90,7 +90,7 @@ export const projects: Project[] = [
     context:
       'An enterprise data platform built on a premise that shapes every screen in it: unify the data without moving it. Organisations connect the systems they already run — SQL and NoSQL databases, spreadsheets, files, SaaS tools — and the platform infers the relationships between them, builds a governed warehouse across the lot, and answers questions asked in plain English. Nothing is replicated; the data stays on the customer’s own infrastructure. It runs its own LLM, every answer carries the SQL that produced it, and role-based access control spans departments and groups inside one organisation.',
     responsibility:
-      'Designed the entire platform independently, working directly with the founder. The most complex thing I have designed.',
+      'Sole designer on the platform that became Qwry.AI — I designed it independently, working directly with the founder, and it is the most complex thing I have designed. It shipped under an earlier name and has grown since I left it: the product sold today carries features I did not design. What follows is the part that was mine.',
     category: 'Sole designer',
     tags: ['Data visualisation', 'LLM', 'RBAC', 'Enterprise'],
     platforms: ['desktop'],
@@ -673,15 +673,15 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
       },
     ],
     impact: {
-      /* Figures below are the product’s own published positioning, not a claim
-         that the design produced them. Anything the design itself moved —
-         time to first answer, setup completion, support load — belongs in
-         metrics, and only Ansh has those. */
+      /* What the product became, not a claim that this design produced it.
+         The work shipped and the product has grown past it — that is the
+         honest signal, and it is a good one. Anything the design itself
+         moved belongs in metrics, and only Ansh has those. */
       metrics: ['[A change you measured, with the before and after]'],
       outcomes: [
-        'The platform shipped and sells publicly at qwry.ai, across power and distribution, manufacturing, supply chain, e-commerce and procurement',
-        'Forty-plus source integrations run through the one connect-and-unify flow, from Postgres and MongoDB to spreadsheets, files and SaaS tools',
-        'The path the design is built around — raw source to a verified, attributable answer — is the product’s headline claim, and it holds because the SQL is always in reach',
+        'The work shipped, and the product it became sells publicly at qwry.ai across power and distribution, manufacturing, supply chain, e-commerce and procurement',
+        'The connect-and-unify flow I designed now carries forty-plus source integrations, from Postgres and MongoDB through spreadsheets, files and SaaS tools',
+        'The spine of the product is still the path this design was built around — raw source to a verified answer you can check, with the SQL always in reach',
       ],
       learnings: ['[What you would tell someone starting the same project]'],
     },
