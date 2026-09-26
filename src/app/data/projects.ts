@@ -634,7 +634,7 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
         'Designed the entire platform independently, working directly with the founder',
         'Structured how organisations model departments and groups under role-based access',
         'Designed the analytics builder: how a dataset becomes a chart, and who chooses',
-        'Designed the LLM as a pane beside the data rather than a page of its own, and made its working visible — validation, retrieval and response generation shown as steps a user can audit',
+        'Designed how the LLM behaves for enterprise use — the dataset-scoped prompt path, and the confidence ladder that decides whether an answer ships plainly, with a reference, with a warning, or to a human reviewer first',
       ],
       whatIDidNot: ['Did not write the production code', '[Anything else outside your scope]'],
     },
@@ -642,6 +642,7 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
       teamSize: 'Me and the founder, working closely',
       techLimitations: [
         'Had to accommodate data arriving through more than 300 different import methods',
+        'Token cost set the shape of the AI. At this data volume a model allowed to search the whole estate made a single small question expensive, so the design had to narrow what it could see before it answered',
         'Every workspace had to stay governable — model and version, query access level, execution limits, export format and size, and logging all had to be an administrator’s choice rather than a default',
       ],
       businessGoals: ['[Goal one]', '[Goal two]'],
@@ -649,29 +650,39 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
     designDecisions: [
       {
         problem:
-          'More than 300 import methods meant a user met a different mental model at every source. Nothing about a MongoDB collection looked like anything about a MySQL table.',
+          'The first design put every imported database into one file-explorer tree and let people build their datasets inside it. That holds for a handful of sources. It does not hold for an organisation running fifty or a hundred databases across teams of thousands, where no two people should see the same slice of the estate.',
         optionChosen:
-          'One file-explorer tree over every connected source. Databases, tables and columns nest like folders and files, so a person navigates unlike systems with a single habit they already have.',
+          'A module above the file explorer, where imported sources are managed as sources — connections, schemas, tables — and where datasets are created. Access is assigned there, per team and per employee, so who can see what is settled when data enters the platform rather than when someone queries it.',
         whyOthersRejected:
-          '[Which alternatives you weighed here — a per-source browser, a flat search-first index — and why each lost]',
+          'The file-explorer-only version was built first and it was the more elegant idea: one tree, one habit, every source in it. It lost because it made everything equally visible to anyone who could open the tree — workable for a small team, disqualifying at enterprise scale, where the access question is the whole point.',
       },
       {
         problem:
-          'An LLM answering questions about governed enterprise data is only useful if its answer can be checked. A confident paragraph with no visible working is not evidence, and in this domain a wrong number that looks right is worse than no number.',
+          'The intent was our own LLM that a user could query directly and work with the data freely. At enterprise data volumes that breaks on cost before it breaks on anything else: one small question burns an enormous number of tokens when the model has the entire estate to search.',
         optionChosen:
-          'The model’s working is part of the interface, not a debug view. Validation, retrieval and response generation appear as discrete steps, the executable SQL behind the answer is always reachable, and the query result sits beside the summary rather than behind it.',
+          'Datasets scoped to the person asking. A prompt begins by choosing a dataset, and the model works inside it — narrowing to the related table, then the column, then the row, before it answers.',
         whyOthersRejected:
-          '[Which alternatives you weighed here — a plain chat answer, an expandable log, a confidence score — and why each lost]',
+          'Letting the model range over everything was the original plan and the easier product to explain. It lost on token cost at the data sizes this is built for. Scoping turned out to carry the access model too: a person queries what they have been given, not what exists.',
       },
       {
         problem:
-          'Access control across departments and groups is usually a separate admin console, which means workspaces get created first and governed later, if at all.',
+          'A public LLM being wrong is an annoyance. An enterprise LLM being wrong about a number someone then acts on is a liability. The model could not answer in one register regardless of how sure it was.',
         optionChosen:
-          'Governance moved into the creation flow. Tools, AI model, query access level, execution limits, export rules and logging are all set in step two of creating a workspace, before it exists.',
+          'The answer changes shape with the model’s own confidence. Sure, and it answers. Slight doubt, and it answers but says to check. Lower, and the answer carries a badge and the reference it came from. Lower still, and a warning goes with it. Below that it does not answer yet — it re-runs its own process two or three times to see whether it converges. If it still cannot get there, the question escalates to a review manager, and the user sees it only after a person has approved it.',
         whyOthersRejected:
-          '[Which alternatives you weighed here — a post-hoc admin panel, org-wide defaults — and why each lost]',
+          'Our own model answering directly, the way a public one does, was the first intent and the thing the final design was built against. At enterprise stakes a confident wrong answer is worse than a held one, so uncertainty had to be visible on the answer itself and, past a threshold, had to stop being the model’s decision at all.',
       },
     ],
+    research: {
+      keyFindings: [
+        'The file-explorer model I had designed did not survive the real case. An enterprise runs fifty or a hundred databases, not a handful, and its teams are large enough that who sees which slice is the first question rather than the last',
+        'Token cost, not model quality, was going to decide whether the AI was usable at this volume — a model free to search the whole estate made one small question expensive',
+      ],
+      painPoints: [
+        'Teams needed different slices of the same estate, and nothing in the first design could express that',
+        'An answer a person could not trace back to a source was an answer they would not act on',
+      ],
+    },
     impact: {
       /* What the product became, not a claim that this design produced it.
          The work shipped and the product has grown past it — that is the
