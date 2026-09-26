@@ -78,15 +78,17 @@ export const projects: Project[] = [
   {
     id: 'query-ai',
     index: '01',
-    title: 'Query.ai',
+    title: 'Qwry.AI',
     org: NEUROMOTION,
-    domain: 'Enterprise data analytics & AI',
+    domain: 'AI-native data intelligence',
     role: 'Product Designer',
     contribution: 'Sole designer',
-    outcome: '[What it made possible that was not possible before.]',
+    liveUrl: 'https://qwry.ai',
+    outcome:
+      'A question asked in plain English, answered across databases that were never built to be read together — with the SQL behind the answer shown, so the answer can be checked rather than trusted.',
     year: YEAR,
     context:
-      'A data platform for large enterprises. Organisations connect their databases — through more than 300 import methods — and build their own analytics on top: choosing how a dataset is visualised, which chart carries it, and how it should be analysed. It runs its own LLM, and role-based access control spans multiple departments and groups inside one organisation.',
+      'An enterprise data platform built on a premise that shapes every screen in it: unify the data without moving it. Organisations connect the systems they already run — SQL and NoSQL databases, spreadsheets, files, SaaS tools — and the platform infers the relationships between them, builds a governed warehouse across the lot, and answers questions asked in plain English. Nothing is replicated; the data stays on the customer’s own infrastructure. It runs its own LLM, every answer carries the SQL that produced it, and role-based access control spans departments and groups inside one organisation.',
     responsibility:
       'Designed the entire platform independently, working directly with the founder. The most complex thing I have designed.',
     category: 'Sole designer',
@@ -624,9 +626,9 @@ const soleDesignerOwnership = {
 const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
   'query-ai': {
     businessProblem:
-      'An enterprise’s data sits in systems that were never meant to be read together, and the people who need answers from it are not the people who can write the query. Every question becomes a ticket for an engineer, and the analysis waits.',
+      'A large organisation typically runs three sources of truth and none of them agree — the finance system, the spreadsheets operations actually works from, and customer data somewhere else again. Reconciling them is manual, so the answer arrives after the decision needed it. The existing fix was to move all of it into a lakehouse, which is a project, not a product.',
     userProblem:
-      'Analysts could describe the question they wanted answered but not express it against half a dozen unlike databases. The ones who could write SQL still had to learn each source’s shape first.',
+      'The people who need an answer are not the people who can write the query. Analysts could describe the question but not express it against half a dozen unlike databases; the ones who could write SQL had to learn each source’s shape first. And an AI that answers in confident prose is no use against governed data — if the answer cannot be checked, it cannot be acted on.',
     ownership: {
       whatIDid: [
         'Designed the entire platform independently, working directly with the founder',
@@ -655,11 +657,11 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
       },
       {
         problem:
-          'An LLM answering questions about governed enterprise data is only useful if its answer can be checked. A confident paragraph with no visible working is not evidence.',
+          'An LLM answering questions about governed enterprise data is only useful if its answer can be checked. A confident paragraph with no visible working is not evidence, and in this domain a wrong number that looks right is worse than no number.',
         optionChosen:
-          'The model’s process is part of the interface. Validation checks, data retrieval and response generation are shown as discrete steps, and the query result sits next to the summary rather than behind it.',
+          'The model’s working is part of the interface, not a debug view. Validation, retrieval and response generation appear as discrete steps, the executable SQL behind the answer is always reachable, and the query result sits beside the summary rather than behind it.',
         whyOthersRejected:
-          '[Which alternatives you weighed here — a plain chat answer, an expandable log — and why each lost]',
+          '[Which alternatives you weighed here — a plain chat answer, an expandable log, a confidence score — and why each lost]',
       },
       {
         problem:
@@ -670,6 +672,19 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
           '[Which alternatives you weighed here — a post-hoc admin panel, org-wide defaults — and why each lost]',
       },
     ],
+    impact: {
+      /* Figures below are the product’s own published positioning, not a claim
+         that the design produced them. Anything the design itself moved —
+         time to first answer, setup completion, support load — belongs in
+         metrics, and only Ansh has those. */
+      metrics: ['[A change you measured, with the before and after]'],
+      outcomes: [
+        'The platform shipped and sells publicly at qwry.ai, across power and distribution, manufacturing, supply chain, e-commerce and procurement',
+        'Forty-plus source integrations run through the one connect-and-unify flow, from Postgres and MongoDB to spreadsheets, files and SaaS tools',
+        'The path the design is built around — raw source to a verified, attributable answer — is the product’s headline claim, and it holds because the SQL is always in reach',
+      ],
+      learnings: ['[What you would tell someone starting the same project]'],
+    },
   },
   'fleet-management': {
     ownership: {
