@@ -623,12 +623,16 @@ const soleDesignerOwnership = {
 
 const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
   'query-ai': {
+    businessProblem:
+      'An enterprise’s data sits in systems that were never meant to be read together, and the people who need answers from it are not the people who can write the query. Every question becomes a ticket for an engineer, and the analysis waits.',
+    userProblem:
+      'Analysts could describe the question they wanted answered but not express it against half a dozen unlike databases. The ones who could write SQL still had to learn each source’s shape first.',
     ownership: {
       whatIDid: [
         'Designed the entire platform independently, working directly with the founder',
         'Structured how organisations model departments and groups under role-based access',
         'Designed the analytics builder: how a dataset becomes a chart, and who chooses',
-        '[Add how you approached designing for its LLM]',
+        'Designed the LLM as a pane beside the data rather than a page of its own, and made its working visible — validation, retrieval and response generation shown as steps a user can audit',
       ],
       whatIDidNot: ['Did not write the production code', '[Anything else outside your scope]'],
     },
@@ -636,10 +640,36 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
       teamSize: 'Me and the founder, working closely',
       techLimitations: [
         'Had to accommodate data arriving through more than 300 different import methods',
-        '[Another real constraint]',
+        'Every workspace had to stay governable — model and version, query access level, execution limits, export format and size, and logging all had to be an administrator’s choice rather than a default',
       ],
       businessGoals: ['[Goal one]', '[Goal two]'],
     },
+    designDecisions: [
+      {
+        problem:
+          'More than 300 import methods meant a user met a different mental model at every source. Nothing about a MongoDB collection looked like anything about a MySQL table.',
+        optionChosen:
+          'One file-explorer tree over every connected source. Databases, tables and columns nest like folders and files, so a person navigates unlike systems with a single habit they already have.',
+        whyOthersRejected:
+          '[Which alternatives you weighed here — a per-source browser, a flat search-first index — and why each lost]',
+      },
+      {
+        problem:
+          'An LLM answering questions about governed enterprise data is only useful if its answer can be checked. A confident paragraph with no visible working is not evidence.',
+        optionChosen:
+          'The model’s process is part of the interface. Validation checks, data retrieval and response generation are shown as discrete steps, and the query result sits next to the summary rather than behind it.',
+        whyOthersRejected:
+          '[Which alternatives you weighed here — a plain chat answer, an expandable log — and why each lost]',
+      },
+      {
+        problem:
+          'Access control across departments and groups is usually a separate admin console, which means workspaces get created first and governed later, if at all.',
+        optionChosen:
+          'Governance moved into the creation flow. Tools, AI model, query access level, execution limits, export rules and logging are all set in step two of creating a workspace, before it exists.',
+        whyOthersRejected:
+          '[Which alternatives you weighed here — a post-hoc admin panel, org-wide defaults — and why each lost]',
+      },
+    ],
   },
   'fleet-management': {
     ownership: {
