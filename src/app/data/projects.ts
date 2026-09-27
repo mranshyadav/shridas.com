@@ -147,6 +147,7 @@ export const projects: Project[] = [
     role: 'Product Designer & Developer',
     contribution: 'Built end to end',
     ongoing: true,
+    started: 'Jun 2026',
     outcome:
       'Published as an npm package — any project can install it and import components directly. Close to every project at SRIIO now runs on it, and it is still in active development.',
     year: '2026',
@@ -178,6 +179,7 @@ export const projects: Project[] = [
     role: 'Product Designer & Developer',
     contribution: 'Built end to end',
     ongoing: true,
+    started: 'Jul 2026',
     outcome:
       'The portal the rest of the platform runs on — and the one I was asked to present during a major enterprise onboarding. [Add what else it unlocked.]',
     year: '2026',
