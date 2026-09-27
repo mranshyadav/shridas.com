@@ -142,7 +142,7 @@ export const projects: Project[] = [
     id: 'design-system',
     index: '03',
     title: 'Design System',
-    org: CHECKMED,
+    org: SRIIO,
     domain: 'Internal · Component library & tooling',
     role: 'Product Designer & Developer',
     contribution: 'Built end to end',
