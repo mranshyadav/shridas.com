@@ -124,7 +124,7 @@ export const projects: Project[] = [
     context:
       'Software for organisations running vehicle fleets at scale: challans, document validity, live vehicle location, and driver, manager and owner management — each user type in its own portal. It also manages the progressive pumps the company manufactures, streaming pump health, expiry and maintenance data in over IoT so owners can see which vehicles are fitted and act before something fails.',
     responsibility:
-      'Sole designer across every portal and the driver app. [Add which parts you are proudest of.]',
+      'Sole designer across every portal and the driver app. Every module here is work I would stand behind, but the one I am happiest with is the vehicle page — getting almost everything a vehicle is, the mechanical and the financial and the legal and the compliance, onto a single page and still having it read easily.',
     category: 'Sole designer',
     tags: ['Fleet operations', 'IoT telemetry', 'Multi-portal', 'Driver safety'],
     /* Desktop only until the driver-app screens arrive — pairing a real desktop
