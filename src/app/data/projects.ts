@@ -734,7 +734,7 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
       whatIDidNot: ['Did not write the production code — the design was mine end to end, the build was not'],
     },
     context: {
-      teamSize: '[Who else was on this, and in what capacity]',
+      teamSize: 'Five of us. I was the only designer, working with three developers — one full stack, one back end, one front end — and the founder.',
       techLimitations: [
         '[A constraint that shaped the design]',
         '[Another real constraint]',
