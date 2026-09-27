@@ -815,9 +815,9 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
   },
   'design-system': {
     businessProblem:
-      'Five portals built at different times, without a shared component layer. [Add what that was costing — duplicated work, inconsistent UI, slow delivery.]',
+      'SRIIO runs several developers and several designers, and every one of them was reaching for different components and different elements. No flow was consistent with any other, nobody could hold to a brand guideline, and the software was worse for it. Then the teams started generating UI with AI, and the drift got faster rather than slower — every generation invented its own version of something that already existed.',
     userProblem:
-      'The people this had to serve were the developers building the next screen. Without a system, a button is a decision every time — someone rebuilds it, slightly differently, and the drift only becomes visible once it is expensive to undo.',
+      'This had to serve the developers and designers building the next screen, and increasingly the model they were building it with. Without a system a button is a decision every time; with AI in the loop it is a fresh decision on every generation. What came out then needed fixing and revising, and every round of that burned tokens on a question that should never have been open.',
     ownership: {
       whatIDid: [
         'Designed and built the system from scratch — components, tokens and the library itself',
@@ -839,13 +839,33 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
       },
       {
         problem:
-          'A design system is only adopted if using it is easier than not using it. Documentation that lives away from the code loses that race immediately.',
+          'A design system is only adopted when using it is easier than not using it, and documentation that lives away from the code loses that race every time. This one also had a reader who will never open a documentation site: the model generating the UI.',
         optionChosen:
-          'Two routes to the same rules. A documentation site with every component and variant rendered live, and a Markdown reference the system generates into the project itself — so the rules sit beside the code, where the next person and the tools they use will actually meet them.',
+          'The system generates a Markdown file into the project itself. A team drops it in, and everything downstream — person or model — works from the same components, the same elements and the same design language. Alongside it, a documentation site with every component and variant rendered live, for the reader who is human.',
         whyOthersRejected:
           '[Which alternatives you weighed here — a Figma-only source of truth, a wiki, Storybook — and why each lost]',
       },
     ],
+    context: {
+      teamSize: '[Who else was involved, and in what capacity]',
+      techLimitations: [
+        '[A constraint that shaped the design]',
+        '[Another real constraint]',
+      ],
+      businessGoals: [
+        'One set of components and elements across every team, so the product could be built to an industry standard instead of to whatever each person reached for',
+        'Make the brand guideline something a project follows by default rather than something people are asked to remember',
+      ],
+    },
+    impact: {
+      metrics: ['[A change you measured, with the before and after]'],
+      outcomes: [
+        'Every team converged on the same components and elements, and the product started being built to an industry standard',
+        'Token burn fell. Generated UI needed fewer fixes and fewer revisions, because a model that can import a component never has to invent one, and never has to reason about the design language at all — and tokens saved are money saved',
+        'Projects got materially faster, which is the outcome sitting underneath all the others',
+      ],
+      learnings: [],
+    },
   },
   'roll-shop-management': {
     ownership: {
