@@ -748,13 +748,22 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
       improvements: [
         'I thought about literacy for the driver app and stopped there. Owners and managers in this sector are deeply experienced people, but not necessarily educated ones, and I designed their portals as though they would read them. Given it again I would carry that thinking up through the whole product instead of treating it as the driver’s problem — make managing the same things simpler everywhere, not just at the bottom',
       ],
-      learnings: [],
+      learnings: [
+        'To think region by region, and about who the user actually is rather than who a persona says they are',
+        'To make one screen work for a reader and a non-reader at the same time. The easy answer is a simpler version for one of them; the better one is a single screen neither has to be taught',
+      ],
     },
     impact: {
-      metrics: ['[A change you measured, with the before and after]'],
+      /* Deliberately empty. Ansh reports that service began arriving on time,
+         pump sales rose and owners' operations became organised — all of which
+         is in outcomes below, in his words. What is not here is a number,
+         because nobody measured one. An invented figure is the first thing a
+         client probes and the one claim he could not defend. */
+      metrics: [],
       outcomes: [
         'A pump is visible for its whole life instead of disappearing at the factory gate, and the manufacturer is told directly when one of its own is near end of life',
-        'An owner can answer at a glance what a fleet of one to two thousand vehicles made impossible by hand — what is owed in fines, what expires this month, which Fastags are empty',
+        'Service started arriving on time, which was the thing the manufacturer built this for — and pump sales rose with it',
+        'An owner can answer at a glance what a fleet of one to two thousand vehicles made impossible by hand — what is owed in fines, what expires this month, which Fastags are empty. Their operations became organised',
         'An accident has evidence attached to it, which is what a claim runs on',
       ],
       learnings: [],
