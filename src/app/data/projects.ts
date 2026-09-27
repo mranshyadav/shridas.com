@@ -754,7 +754,7 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
         optionChosen:
           'The dashboard opens on what is about to fail. Pumps that have reached end of life, pumps approaching it, pumps low on grease — then unhealthy pumps broken down by fault type and by vehicle type, so a pattern in the machines is visible next to a pattern in the fleet.',
         whyOthersRejected:
-          '[Which alternatives you weighed here — a utilisation or fleet-size dashboard, a plain alert list — and why each lost]',
+          'The first version was a more conventional dashboard and it widened as the platform did. What pushed it was the thing this product exists for: every loss in this business — the stopped vehicle, the service call that came late, the fine nobody saw coming — happens because something was not noticed in time. A dashboard that reports what exists cannot serve that. One that opens on whatever is closest to failing can.',
       },
       {
         problem:
