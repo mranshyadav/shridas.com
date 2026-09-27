@@ -736,8 +736,8 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
     context: {
       teamSize: 'Five of us. I was the only designer, working with three developers — one full stack, one back end, one front end — and the founder.',
       techLimitations: [
-        '[A constraint that shaped the design]',
-        '[Another real constraint]',
+        'The driver app had to work for people who do not read it. Many drivers in India are not literate, so it had to be understood by looking rather than by reading — of everything on this project, that is the part that took the most thinking',
+        'Challan data had to be brought in from outside the product, and putting Fastag recharge inside it meant carrying a payment flow that was not ours. Neither was straightforward to work out',
       ],
       businessGoals: [
         'See every pump the company has manufactured once it is in the field — which vehicle carries it, what condition it is in, when it is due',
