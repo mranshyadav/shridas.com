@@ -116,7 +116,8 @@ export const projects: Project[] = [
     domain: 'Fleet, IoT & driver safety',
     role: 'Product Designer',
     contribution: 'Sole designer',
-    outcome: '[What changed for the fleet owners, managers or drivers using it.]',
+    outcome:
+      'A pump stopped disappearing the moment it left the factory — and the owner it was fitted to got back the three things costing more than the pump: the fines, the expiries and the Fastags, at a fleet size where nobody could add them up by hand.',
     year: YEAR,
     context:
       'Software for organisations running vehicle fleets at scale: challans, document validity, live vehicle location, and driver, manager and owner management — each user type in its own portal. It also manages the progressive pumps the company manufactures, streaming pump health, expiry and maintenance data in over IoT so owners can see which vehicles are fitted and act before something fails.',
@@ -717,12 +718,13 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
   },
   'fleet-management': {
     businessProblem:
-      'An organisation running twelve hundred vehicles is carrying four unrelated problems at once: machines that wear out, documents that expire, fines that go unpaid, and drivers whose habits nobody can see. Each one sat somewhere different — a workshop, a folder of certificates, a government portal, a driver’s word — and every one of them only announced itself after it had already cost something.',
+      'The company manufactures progressive pumps, and once a pump left the factory it disappeared. Nobody could say which vehicles carried one, what condition it was in, or when it was next due for service — not the manufacturer, and not the owner of the vehicle it was fitted to. Both of them paid for that blindness in the same event: the service slipped, the pump failed, and a vehicle stopped in critical condition. The owner lost the vehicle and the work it was doing. The manufacturer lost its name to a service call that arrived after the breakdown instead of before it.',
     userProblem:
-      'An owner could not answer the one question that mattered — which of my vehicles is about to become a problem — without assembling it himself from four places. Managers worked the same way, one vehicle at a time, and a fleet of this size makes that arithmetic impossible.',
+      'Interviewing vehicle owners changed what the product was. Running one or two thousand vehicles, the pump was not their largest problem. Nobody could total the fines — how many, how much, raised where. Nobody could say which documents had expired or were about to, or which Fastags were blocked, empty, or nearly empty. At that fleet size the arithmetic simply cannot be done by hand, so owners did not know where money had to go next, and large sums went to penalties that a week of notice would have prevented.',
     ownership: {
       whatIDid: [
         'All the design across every portal and the driver app — I was the only designer',
+        'Interviewed vehicle owners before designing, and the findings redrew the product’s scope from the pump to the vehicle',
         'Designed for three distinct user types: owners, managers and drivers',
         'Designed the IoT pump telemetry views — health, expiry and maintenance',
         'Designed driver safety around evidence rather than a score alone: every incident lands on the trip’s traced route with cabin, front and rear camera stills attached to it',
@@ -732,11 +734,19 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
     designDecisions: [
       {
         problem:
-          'A vehicle is a mechanical object, a financial one, a legal one and a compliance one at the same time, and the four have nothing to do with each other. Split across four screens, nobody sees the vehicle.',
+          'The brief was one thing: track our pumps in the field. That was a real problem and a solvable one — but it was the manufacturer’s problem, and the person who would have to open this software every day was the vehicle owner.',
         optionChosen:
-          'One page per vehicle that holds all four. Pump health from the IoT stream, the Fastag balance and its last transaction, pending challans with the overdue ones flagged, and every document with its expiry — registration, permit, fitness, insurance — on the same page as the chassis number and the driver.',
+          'We interviewed owners before designing, and the product grew from the pump to the vehicle. One page per vehicle now carries pump health off the IoT stream, the Fastag balance and its last transaction, pending challans with the overdue ones flagged, and every document with its expiry — registration, permit, fitness, insurance — beside the chassis number and the driver.',
         whyOthersRejected:
-          '[Which alternatives you weighed here — a section per domain, a separate compliance module — and why each lost]',
+          'Building the pump tracker as briefed was faster, and it was what had been asked for. It lost because an owner will not open a tool daily for the pump alone — and a tool nobody opens does not get the pump serviced either. The manufacturer’s own goal turned out to depend on solving the owner’s problem first.',
+      },
+      {
+        problem:
+          'A reading on a dashboard prevents nothing unless it reaches the person who can act on it, and that person changes with what is wrong and how soon it matters.',
+        optionChosen:
+          'The pump’s condition decides who hears about it and how loudly. Ordinary conditions notify; urgent ones place a call. A service date coming up reaches the manager and the driver, with a location suggested to have it done. A pump approaching end of life reaches the manufacturer as well as the owner, because replacing it is the manufacturer’s job, not the owner’s.',
+        whyOthersRejected:
+          '[Which alternatives you weighed here — one alert list everyone shares, notifying only the owner, email only — and why each lost]',
       },
       {
         problem:
@@ -748,13 +758,23 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
       },
       {
         problem:
-          'A driver safety score on its own is an accusation. A driver disputes it, a manager cannot check it, and the number stops being used.',
+          'Once the vehicles were on a map the questions changed from maintenance to what happened. An accident is disputed and a claim needs proof. A driver’s habits at the wheel are visible to nobody but the driver. And a safety score on its own is only an accusation — the driver argues with it, the manager cannot check it, and the number stops being used.',
         optionChosen:
-          'The score is the summary; the evidence is the design. Each trip draws its actual route against the intended one, and every incident on it — a harsh braking event, its time — carries stills from the cabin, front and rear cameras. A manager can see what happened rather than take the number on faith.',
+          'Cameras and sensors on the vehicle, and the trip drawn as its actual route against the intended one. Every incident carries its time and stills from the cabin, front and rear, so an accident can be reconstructed afterwards and the footage carries the insurance claim. The same channel surfaces what a manager could never otherwise see — drinking, smoking at the wheel, driving past the permitted hours — as events with evidence attached rather than as a figure to be argued about.',
         whyOthersRejected:
-          '[Which alternatives you weighed here — a score alone, a raw event log, video on request — and why each lost]',
+          '[Which alternatives you weighed here — a score alone, a raw event log, pulling video only when asked — and why each lost]',
       },
     ],
+    research: {
+      keyFindings: [
+        'The brief was a pump tracker. The owners we interviewed had larger problems than the pump — unpaid challans, expiring documents, blocked or empty Fastags — and none of it was visible at fleet scale',
+        'At one to two thousand vehicles, arithmetic is the product. How much is owed, what expires this month, which cards are empty: every question an owner has is impossible to answer by hand',
+      ],
+      painPoints: [
+        'An owner learned about a pump when the vehicle stopped, not before — and by then the vehicle and the work it was doing were both lost',
+        'Fines surfaced as a total after the fact, when a week of notice would have prevented most of them',
+      ],
+    },
   },
   'design-system': {
     businessProblem:
