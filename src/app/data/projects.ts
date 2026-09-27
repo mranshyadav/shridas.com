@@ -851,8 +851,10 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
     context: {
       teamSize: 'Me. I designed it and I built it — the components, the package, the documentation site and the Markdown generation.',
       techLimitations: [
-        '[A constraint that shaped the design]',
-        '[Another real constraint]',
+        'Zero dependencies was itself the hardest constraint. Everything had to come out of Tailwind classes the host project already compiles — straightforward for a button, genuinely awkward for a date picker, a modal or a drawer',
+        'Dark mode on every component meant every decision was made twice. Nothing could be designed for one surface and adapted to the other afterwards',
+        'Adoption was a constraint rather than an afterthought. Developers already had a way of working, and a system only earns its place if using it is easier than carrying on as they were',
+        'I was doing all of it — the design, the code, the documentation site, the package and the Markdown generation — so everything had to be scoped to what one person could keep maintaining',
       ],
       businessGoals: [
         'One set of components and elements across every team, so the product could be built to an industry standard instead of to whatever each person reached for',
