@@ -731,7 +731,27 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
         'Designed the IoT pump telemetry views — health, expiry and maintenance',
         'Designed driver safety around evidence rather than a score alone: every incident lands on the trip’s traced route with cabin, front and rear camera stills attached to it',
       ],
-      whatIDidNot: ['Did not write the production code', '[Anything else outside your scope]'],
+      whatIDidNot: ['Did not write the production code — the design was mine end to end, the build was not'],
+    },
+    context: {
+      teamSize: '[Who else was on this, and in what capacity]',
+      techLimitations: [
+        '[A constraint that shaped the design]',
+        '[Another real constraint]',
+      ],
+      businessGoals: [
+        'See every pump the company has manufactured once it is in the field — which vehicle carries it, what condition it is in, when it is due',
+        'Get the service call to the vehicle before the breakdown rather than after it, which is where both the owner’s loss and the manufacturer’s reputation were going',
+      ],
+    },
+    impact: {
+      metrics: ['[A change you measured, with the before and after]'],
+      outcomes: [
+        'A pump is visible for its whole life instead of disappearing at the factory gate, and the manufacturer is told directly when one of its own is near end of life',
+        'An owner can answer at a glance what a fleet of one to two thousand vehicles made impossible by hand — what is owed in fines, what expires this month, which Fastags are empty',
+        'An accident has evidence attached to it, which is what a claim runs on',
+      ],
+      learnings: [],
     },
     designDecisions: [
       {
