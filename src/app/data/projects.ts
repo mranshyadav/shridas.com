@@ -746,7 +746,7 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
         optionChosen:
           'The pump’s condition decides who hears about it and how loudly. Ordinary conditions notify; urgent ones place a call. A service date coming up reaches the manager and the driver, with a location suggested to have it done. A pump approaching end of life reaches the manufacturer as well as the owner, because replacing it is the manufacturer’s job, not the owner’s.',
         whyOthersRejected:
-          '[Which alternatives you weighed here — one alert list everyone shares, notifying only the owner, email only — and why each lost]',
+          'The first plan was a system for the owner alone. Managers came second, and drivers got a mobile application of their own after that. Owner-only lost to the size of the fleet it was built for — someone running a thousand vehicles is not the person who takes one of them in for a service. Each portal exists because the person who can act on a given condition is a different person, and the driver’s is an app because he is the only one of the three who is never at a desk.',
       },
       {
         problem:
