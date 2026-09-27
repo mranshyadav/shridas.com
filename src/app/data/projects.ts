@@ -828,7 +828,7 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
         'Wrote the documentation site that ships with it — installation, theming, and every component with its variants, live',
         'Decided what belonged in the system and what did not — a judgement rather than a written rule, and after several years designing products, not the part of this that took the thinking',
       ],
-      whatIDidNot: ['[Anything outside your scope]'],
+      whatIDidNot: ['Nothing here was outside my scope — I designed it, built it, packaged it and documented it'],
     },
     designDecisions: [
       {
@@ -881,7 +881,9 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
       ],
     },
     impact: {
-      metrics: ['[A change you measured, with the before and after]'],
+      metrics: [
+        'The AI subscription used to run out ten to twelve days before the month was over. It no longer runs out inside the month at all. Nobody was measuring a precise figure, but that is the before and the after',
+      ],
       outcomes: [
         'Every team converged on the same components and elements, and the product started being built to an industry standard',
         'Token burn fell. Generated UI needed fewer fixes and fewer revisions, because a model that can import a component never has to invent one, and never has to reason about the design language at all — and tokens saved are money saved',
