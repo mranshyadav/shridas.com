@@ -824,7 +824,7 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
         'Published it as an npm package, so any project installs it and imports components directly',
         'Built the Markdown generation, so a project can produce its own consistency reference',
         'Wrote the documentation site that ships with it — installation, theming, and every component with its variants, live',
-        '[Add how you decided what belonged in the system and what did not]',
+        'Decided what belonged in the system and what did not — a judgement rather than a written rule, and after several years designing products, not the part of this that took the thinking',
       ],
       whatIDidNot: ['[Anything outside your scope]'],
     },
