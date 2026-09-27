@@ -118,7 +118,9 @@ export const projects: Project[] = [
     contribution: 'Sole designer',
     outcome:
       'A pump stopped disappearing the moment it left the factory — and the owner it was fitted to got back the three things costing more than the pump: the fines, the expiries and the Fastags, at a fleet size where nobody could add them up by hand.',
-    year: YEAR,
+    year: '2024 — 2025',
+    started: 'Nov 2024',
+    ended: 'Mar 2025',
     context:
       'Software for organisations running vehicle fleets at scale: challans, document validity, live vehicle location, and driver, manager and owner management — each user type in its own portal. It also manages the progressive pumps the company manufactures, streaming pump health, expiry and maintenance data in over IoT so owners can see which vehicles are fitted and act before something fails.',
     responsibility:
