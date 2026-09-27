@@ -744,6 +744,12 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
         'Get the service call to the vehicle before the breakdown rather than after it, which is where both the owner’s loss and the manufacturer’s reputation were going',
       ],
     },
+    reflection: {
+      improvements: [
+        'I thought about literacy for the driver app and stopped there. Owners and managers in this sector are deeply experienced people, but not necessarily educated ones, and I designed their portals as though they would read them. Given it again I would carry that thinking up through the whole product instead of treating it as the driver’s problem — make managing the same things simpler everywhere, not just at the bottom',
+      ],
+      learnings: [],
+    },
     impact: {
       metrics: ['[A change you measured, with the before and after]'],
       outcomes: [
