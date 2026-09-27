@@ -835,7 +835,7 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
         optionChosen:
           'Zero runtime dependencies. Every component is styled with Tailwind classes the host project already compiles, so nothing extra ships and a team themes it with the tools it uses anyway. Fully typed, dark mode throughout, and each component copy-pasteable as well as importable.',
         whyOthersRejected:
-          '[Which alternatives you weighed here — CSS-in-JS, a bundled stylesheet, building on an existing library — and why each lost]',
+          'Nothing was weighed against it, and I would rather say so than invent a shortlist. I designed and built this one alone, end to end, so there was no argument to have — the decision and the consequences of it sat with the same person. Zero dependencies was the shape it had from the start, not a position defended against others.',
       },
       {
         problem:
@@ -847,7 +847,7 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
       },
     ],
     context: {
-      teamSize: '[Who else was involved, and in what capacity]',
+      teamSize: 'Me. I designed it and I built it — the components, the package, the documentation site and the Markdown generation.',
       techLimitations: [
         '[A constraint that shaped the design]',
         '[Another real constraint]',
