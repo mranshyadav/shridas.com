@@ -871,6 +871,15 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
         'No flow was consistent with another, and the drift arrived faster once AI was generating the screens rather than slower',
       ],
     },
+    reflection: {
+      /* Empty on purpose: the project is still running, so asking what he would
+         do differently is premature and he said so. The section hides itself. */
+      improvements: [],
+      learnings: [
+        'How to find the problem a team actually has. Nobody here described this as a design problem — they asked for a bigger AI subscription — and the useful part was taking that complaint seriously enough to go and look underneath it',
+        'The build came with it. The code, the packaging and the documentation are things I now know how to ship, not only to design',
+      ],
+    },
     impact: {
       metrics: ['[A change you measured, with the before and after]'],
       outcomes: [
