@@ -762,7 +762,7 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
         optionChosen:
           'Cameras and sensors on the vehicle, and the trip drawn as its actual route against the intended one. Every incident carries its time and stills from the cabin, front and rear, so an accident can be reconstructed afterwards and the footage carries the insurance claim. The same channel surfaces what a manager could never otherwise see — drinking, smoking at the wheel, driving past the permitted hours — as events with evidence attached rather than as a figure to be argued about.',
         whyOthersRejected:
-          '[Which alternatives you weighed here — a score alone, a raw event log, pulling video only when asked — and why each lost]',
+          'Nothing was weighed against this one, and it would be tidier to pretend otherwise. The tracking, the telemetry and the three portals already existed, so the question was never which approach to take — it was how far the platform should reach. Having the whole system in place, the answer was as far as the vehicle itself. The cameras and sensors were the reach, not the choice.',
       },
     ],
     research: {
