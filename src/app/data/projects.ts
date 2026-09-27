@@ -148,7 +148,7 @@ export const projects: Project[] = [
       'Published as an npm package — any project can install it and import components directly. [Add adoption: which projects use it, or what it replaced.]',
     year: '2026',
     context:
-      'A design system for the platform, designed and built from scratch. It ships as an npm package, so developers install it in any project and import components straight from it. It also generates a Markdown reference for a given project, which puts the rules for building consistently next to the code rather than in a document nobody opens. [Add its name.]',
+      'SRIIO UI — a design system designed and built from scratch, now at v2.0.0. Twenty-six components and more than forty UI blocks, fully typed, dark mode throughout, and no runtime dependencies at all: styling is Tailwind classes, so there is no CSS bundle to ship and nothing to pay for at runtime. It installs from npm as @sriio/ui and imports straight into any project. It also generates a Markdown reference for a given project, which puts the rules for building consistently next to the code rather than in a document nobody opens.',
     responsibility:
       'Designed and built end to end — the components, the library, the packaging and the docs generation. Still in active development.',
     category: 'Built end to end',
@@ -716,28 +716,79 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
     },
   },
   'fleet-management': {
+    businessProblem:
+      'An organisation running twelve hundred vehicles is carrying four unrelated problems at once: machines that wear out, documents that expire, fines that go unpaid, and drivers whose habits nobody can see. Each one sat somewhere different — a workshop, a folder of certificates, a government portal, a driver’s word — and every one of them only announced itself after it had already cost something.',
+    userProblem:
+      'An owner could not answer the one question that mattered — which of my vehicles is about to become a problem — without assembling it himself from four places. Managers worked the same way, one vehicle at a time, and a fleet of this size makes that arithmetic impossible.',
     ownership: {
       whatIDid: [
         'All the design across every portal and the driver app — I was the only designer',
         'Designed for three distinct user types: owners, managers and drivers',
         'Designed the IoT pump telemetry views — health, expiry and maintenance',
-        '[Add how you handled the driver safety alerts]',
+        'Designed driver safety around evidence rather than a score alone: every incident lands on the trip’s traced route with cabin, front and rear camera stills attached to it',
       ],
       whatIDidNot: ['Did not write the production code', '[Anything else outside your scope]'],
     },
+    designDecisions: [
+      {
+        problem:
+          'A vehicle is a mechanical object, a financial one, a legal one and a compliance one at the same time, and the four have nothing to do with each other. Split across four screens, nobody sees the vehicle.',
+        optionChosen:
+          'One page per vehicle that holds all four. Pump health from the IoT stream, the Fastag balance and its last transaction, pending challans with the overdue ones flagged, and every document with its expiry — registration, permit, fitness, insurance — on the same page as the chassis number and the driver.',
+        whyOthersRejected:
+          '[Which alternatives you weighed here — a section per domain, a separate compliance module — and why each lost]',
+      },
+      {
+        problem:
+          'A fleet dashboard usually reports what exists: how many vehicles, how far they ran, how much fuel. None of that tells an owner where to spend the next hour.',
+        optionChosen:
+          'The dashboard opens on what is about to fail. Pumps that have reached end of life, pumps approaching it, pumps low on grease — then unhealthy pumps broken down by fault type and by vehicle type, so a pattern in the machines is visible next to a pattern in the fleet.',
+        whyOthersRejected:
+          '[Which alternatives you weighed here — a utilisation or fleet-size dashboard, a plain alert list — and why each lost]',
+      },
+      {
+        problem:
+          'A driver safety score on its own is an accusation. A driver disputes it, a manager cannot check it, and the number stops being used.',
+        optionChosen:
+          'The score is the summary; the evidence is the design. Each trip draws its actual route against the intended one, and every incident on it — a harsh braking event, its time — carries stills from the cabin, front and rear cameras. A manager can see what happened rather than take the number on faith.',
+        whyOthersRejected:
+          '[Which alternatives you weighed here — a score alone, a raw event log, video on request — and why each lost]',
+      },
+    ],
   },
   'design-system': {
     businessProblem:
       'Five portals built at different times, without a shared component layer. [Add what that was costing — duplicated work, inconsistent UI, slow delivery.]',
+    userProblem:
+      'The people this had to serve were the developers building the next screen. Without a system, a button is a decision every time — someone rebuilds it, slightly differently, and the drift only becomes visible once it is expensive to undo.',
     ownership: {
       whatIDid: [
         'Designed and built the system from scratch — components, tokens and the library itself',
         'Published it as an npm package, so any project installs it and imports components directly',
         'Built the Markdown generation, so a project can produce its own consistency reference',
+        'Wrote the documentation site that ships with it — installation, theming, and every component with its variants, live',
         '[Add how you decided what belonged in the system and what did not]',
       ],
       whatIDidNot: ['[Anything outside your scope]'],
     },
+    designDecisions: [
+      {
+        problem:
+          'A component library that arrives with its own runtime is a tax on every project that installs it — a CSS bundle to ship, a theme layer to learn, and a dependency that has to be kept alive.',
+        optionChosen:
+          'Zero runtime dependencies. Every component is styled with Tailwind classes the host project already compiles, so nothing extra ships and a team themes it with the tools it uses anyway. Fully typed, dark mode throughout, and each component copy-pasteable as well as importable.',
+        whyOthersRejected:
+          '[Which alternatives you weighed here — CSS-in-JS, a bundled stylesheet, building on an existing library — and why each lost]',
+      },
+      {
+        problem:
+          'A design system is only adopted if using it is easier than not using it. Documentation that lives away from the code loses that race immediately.',
+        optionChosen:
+          'Two routes to the same rules. A documentation site with every component and variant rendered live, and a Markdown reference the system generates into the project itself — so the rules sit beside the code, where the next person and the tools they use will actually meet them.',
+        whyOthersRejected:
+          '[Which alternatives you weighed here — a Figma-only source of truth, a wiki, Storybook — and why each lost]',
+      },
+    ],
   },
   'roll-shop-management': {
     ownership: {
