@@ -96,11 +96,12 @@ await writePage(
    Giving them real files rather than one rewrite target keeps every route on
    this site resolving by the same mechanism — a static file at its own path —
    so nothing depends on how a particular host rewrites URLs. */
+/* Not any more: the CMS is compiled out of the production bundle, so shells at
+   /admin/* would be pages that load and then render nothing. Left here, and
+   left empty, because the reasoning above is worth keeping. */
 const adminHead = renderHeadTags(metaFor('/admin'), { imageExists });
-
-for (const route of ADMIN_SHELL_ROUTES) {
-  await writePage(outputPath(route), template.replace(SEO_BLOCK, adminHead));
-}
+void adminHead;
+const ADMIN_SHELLS_WRITTEN = [];
 
 /* ----------------------------------------------------------------- sitemap */
 
@@ -126,6 +127,6 @@ const sitemap = [
 await writeFile(path.join(distDir, 'sitemap.xml'), sitemap, 'utf8');
 
 console.log(
-  `\nPrerendered ${rendered} routes + 404.html, ${ADMIN_SHELL_ROUTES.length} admin shells, ` +
+  `\nPrerendered ${rendered} routes + 404.html, ${ADMIN_SHELLS_WRITTEN.length} admin shells, ` +
     `${indexable.length} URLs in sitemap.xml`,
 );

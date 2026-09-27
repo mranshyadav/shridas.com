@@ -86,8 +86,14 @@ export function AppRoutes() {
       <ScrollToTop />
       <Toaster position="bottom-right" />
       <Routes>
-        {/* CMS — no public chrome. Reachable at /admin; not linked from the site. */}
-        <Route path="/admin/login" element={<AdminLogin />} />
+        {/* CMS — a local authoring tool, and dev-only on purpose.
+            `import.meta.env.DEV` is replaced with a literal at build time, so
+            these routes and everything they pull in are compiled out of the
+            production bundle entirely. They used to ship, which put a
+            hardcoded password into the public JavaScript. Run `npm run dev` to
+            use the CMS. */}
+        {import.meta.env.DEV && <Route path="/admin/login" element={<AdminLogin />} />}
+        {import.meta.env.DEV && (
         <Route
           path="/admin"
           element={
@@ -104,6 +110,7 @@ export function AppRoutes() {
           <Route path="website-content/edit/main" element={<Suspense fallback={null}><WebsiteContentEditor /></Suspense>} />
           <Route path="chatbot" element={<Suspense fallback={null}><ChatbotDashboard /></Suspense>} />
         </Route>
+        )}
 
         {/* Public site */}
         <Route element={<PublicLayout />}>

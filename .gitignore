@@ -1,3 +1,8 @@
 node_modules
 dist
 .ssr
+
+# Local-only admin credentials for the dev CMS. Never commit these.
+.env.local
+.env*.local
+ADMIN_CREDENTIALS.md
