@@ -148,7 +148,7 @@ export const projects: Project[] = [
     contribution: 'Built end to end',
     ongoing: true,
     outcome:
-      'Published as an npm package — any project can install it and import components directly. [Add adoption: which projects use it, or what it replaced.]',
+      'Published as an npm package — any project can install it and import components directly. Close to every project at SRIIO now runs on it, and it is still in active development.',
     year: '2026',
     context:
       'SRIIO UI — a design system designed and built from scratch, now at v2.0.0. Twenty-six components and more than forty UI blocks, fully typed, dark mode throughout, and no runtime dependencies at all: styling is Tailwind classes, so there is no CSS bundle to ship and nothing to pay for at runtime. It installs from npm as @sriio/ui and imports straight into any project. It also generates a Markdown reference for a given project, which puts the rules for building consistently next to the code rather than in a document nobody opens.',
