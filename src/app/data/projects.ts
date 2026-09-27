@@ -845,7 +845,7 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
         optionChosen:
           'The system generates a Markdown file into the project itself. A team drops it in, and everything downstream — person or model — works from the same components, the same elements and the same design language. Alongside it, a documentation site with every component and variant rendered live, for the reader who is human.',
         whyOthersRejected:
-          '[Which alternatives you weighed here — a Figma-only source of truth, a wiki, Storybook — and why each lost]',
+          'Nothing was weighed against this one either. The Markdown file exists because of what the problem turned out to be — the AI needed context and the design needed consistency, and one file sitting in the project answers both at once. It was not picked over Storybook or a Figma source of truth; those were never the question being asked.',
       },
     ],
     context: {
