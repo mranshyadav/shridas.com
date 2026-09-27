@@ -144,7 +144,7 @@ export const projects: Project[] = [
     title: 'Design System',
     org: SRIIO,
     domain: 'Internal · Component library & tooling',
-    role: 'Product Designer & Developer',
+    role: 'Product Manager, Designer & Developer',
     contribution: 'Built end to end',
     ongoing: true,
     started: 'Jun 2026',
@@ -841,9 +841,9 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
       },
       {
         problem:
-          'A design system is only adopted when using it is easier than not using it, and documentation that lives away from the code loses that race every time. This one also had a reader who will never open a documentation site: the model generating the UI.',
+          'The system answered the token problem, and a second one surfaced behind it: teams still could not hold to a brand guideline, because nothing inside a project carried it. Documentation that lives away from the code loses that race every time — and this had a reader who will never open a documentation site at all, which is the model generating the UI.',
         optionChosen:
-          'The system generates a Markdown file into the project itself. A team drops it in, and everything downstream — person or model — works from the same components, the same elements and the same design language. Alongside it, a documentation site with every component and variant rendered live, for the reader who is human.',
+          'A feature added after the system was already running: it generates a Markdown file into the project itself, and manages it. A team drops it in, and everything downstream — person or model — works from the same components, the same elements and the same design language. The documentation site, with every component and variant rendered live, is for the reader who is human.',
         whyOthersRejected:
           'Nothing was weighed against this one either. The Markdown file exists because of what the problem turned out to be — the AI needed context and the design needed consistency, and one file sitting in the project answers both at once. It was not picked over Storybook or a Figma source of truth; those were never the question being asked.',
       },
@@ -859,6 +859,16 @@ const CASE_STUDY_OVERRIDES: Record<string, Partial<CaseStudyBody>> = {
       businessGoals: [
         'One set of components and elements across every team, so the product could be built to an industry standard instead of to whatever each person reached for',
         'Make the brand guideline something a project follows by default rather than something people are asked to remember',
+      ],
+    },
+    research: {
+      keyFindings: [
+        'The signal did not arrive as a design problem. I am the product manager here as well, and the team kept asking for a bigger AI subscription because the quota kept running out. That complaint is what sent me looking',
+        'The cost was underneath the UI. Every team was generating interfaces with AI from a different starting point, so what came back needed fixing and revising — the tokens were going on the same question being answered again and again',
+      ],
+      painPoints: [
+        'Nobody could hold to a brand guideline, because nothing inside a project carried it',
+        'No flow was consistent with another, and the drift arrived faster once AI was generating the screens rather than slower',
       ],
     },
     impact: {
